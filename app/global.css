@@ -1,0 +1,18 @@
+@import 'tailwindcss';
+@import '@hanzo/docs-ui/style.css';
+
+:root {
+  --fd-primary: 142 71% 45%;
+  --fd-background: 0 0% 4%;
+  --fd-muted: 0 0% 14%;
+  --fd-card: 0 0% 8%;
+  --fd-border: 0 0% 20%;
+}
+
+.dark {
+  --fd-primary: 142 71% 45%;
+  --fd-background: 0 0% 4%;
+  --fd-muted: 0 0% 14%;
+  --fd-card: 0 0% 8%;
+  --fd-border: 0 0% 20%;
+}

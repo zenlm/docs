@@ -1,0 +1,47 @@
+---
+title: Introduction
+description: Frontier AI models for code, reasoning, and multimodal understanding
+---
+
+# Zen LM
+
+**Clarity Through Intelligence**
+
+Zen LM is an open-source AI model family ranging from 600M to 671B parameters, co-developed by [Hanzo AI](https://hanzo.ai) and [Zoo Labs Foundation](https://zoo.ngo).
+
+## Model Tiers
+
+| Tier | Model | Active Params | SWE-bench | Use Case |
+|------|-------|---------------|-----------|----------|
+| **Frontier** | zen-max | 14B | 71.3% | Research, complex reasoning |
+| **Flagship** | zen-coder-flash | 3B | 59.2% | Production coding |
+| **Standard** | zen-omni | 7B | - | Multimodal |
+| **Efficient** | zen-eco | 4B | - | General purpose |
+| **Edge** | zen-coder-4b | 4B | ~15% | Mobile/edge |
+| **Embedded** | zen-nano | 0.6B | - | IoT, embedded |
+
+## Quick Start
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
+
+# Load flagship model
+model = AutoModelForCausalLM.from_pretrained(
+    "zenlm/zen-coder-flash",
+    torch_dtype=torch.bfloat16,
+    device_map="auto",
+)
+tokenizer = AutoTokenizer.from_pretrained("zenlm/zen-coder-flash")
+
+messages = [{"role": "user", "content": "Write a Python quicksort"}]
+inputs = tokenizer.apply_chat_template(messages, return_tensors="pt", add_generation_prompt=True)
+outputs = model.generate(inputs.to(model.device), max_new_tokens=512)
+print(tokenizer.decode(outputs[0], skip_special_tokens=True))
+```
+
+## Links
+
+- **HuggingFace**: [huggingface.co/zenlm](https://huggingface.co/zenlm)
+- **GitHub**: [github.com/zenlm](https://github.com/zenlm)
+- **Training Framework**: [Zoo Gym](https://github.com/zooai/gym)
