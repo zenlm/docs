@@ -1,20 +1,4 @@
 {
   "title": "Documentation",
-  "pages": [
-    "---Getting Started---",
-    "index",
-    "getting-started/quickstart",
-    "getting-started/installation",
-    "---Models---",
-    "models/zen-coder-flash",
-    "models/zen-max",
-    "models/zen-omni",
-    "models/zen-nano",
-    "models/zen-vl",
-    "---Training---",
-    "training/overview",
-    "training/mlx",
-    "training/cuda",
-    "training/cloud"
-  ]
+  "pages": ["index", "models", "datasets", "training"]
 }

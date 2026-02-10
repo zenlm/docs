@@ -1,47 +1,71 @@
 ---
 title: Introduction
-description: Frontier AI models for code, reasoning, and multimodal understanding
+description: Zen4 - Open foundation models from 4B to 1T+ parameters
 ---
 
-# Zen LM
+# Zen4
 
-**Clarity Through Intelligence**
+**Zen4** is a family of open, uncensored AI models built on abliterated weights from Qwen3 and frontier MoE architectures.
 
-Zen LM is an open-source AI model family ranging from 600M to 671B parameters, co-developed by [Hanzo AI](https://hanzo.ai) and [Zoo Labs Foundation](https://zoo.ngo).
+From the 4B Mini for edge deployment to the 1.04T Ultra for cloud-scale reasoning, Zen4 models run unrestricted with no safety theater.
 
 ## Model Tiers
 
-| Tier | Model | Active Params | SWE-bench | Use Case |
-|------|-------|---------------|-----------|----------|
-| **Frontier** | zen-max | 14B | 71.3% | Research, complex reasoning |
-| **Flagship** | zen-coder-flash | 3B | 59.2% | Production coding |
-| **Standard** | zen-omni | 7B | - | Multimodal |
-| **Efficient** | zen-eco | 4B | - | General purpose |
-| **Edge** | zen-coder-4b | 4B | ~15% | Mobile/edge |
-| **Embedded** | zen-nano | 0.6B | - | IoT, embedded |
+<Cards>
+  <Card title="Consumer Line" href="/docs/models#consumer">
+    5 models from 4B to 80B MoE - dense models for edge and MoE flagships for desktop
+  </Card>
+  <Card title="Coder Line" href="/docs/models#coder">
+    3 coding models from 31B to 355B for agentic programming
+  </Card>
+  <Card title="Ultra Line" href="/docs/models#ultra">
+    Trillion-parameter MoE models for cloud deployment
+  </Card>
+  <Card title="Training" href="/docs/training">
+    Fine-tune Zen4 models with MLX, Unsloth, or DeepSpeed
+  </Card>
+</Cards>
 
 ## Quick Start
 
+### Use a Zen4 model
+
 ```python
 from transformers import AutoModelForCausalLM, AutoTokenizer
-import torch
 
-# Load flagship model
-model = AutoModelForCausalLM.from_pretrained(
-    "zenlm/zen-coder-flash",
-    torch_dtype=torch.bfloat16,
-    device_map="auto",
-)
-tokenizer = AutoTokenizer.from_pretrained("zenlm/zen-coder-flash")
+model = AutoModelForCausalLM.from_pretrained("zenlm/zen4")
+tokenizer = AutoTokenizer.from_pretrained("zenlm/zen4")
 
-messages = [{"role": "user", "content": "Write a Python quicksort"}]
-inputs = tokenizer.apply_chat_template(messages, return_tensors="pt", add_generation_prompt=True)
-outputs = model.generate(inputs.to(model.device), max_new_tokens=512)
+messages = [{"role": "user", "content": "Hello, who are you?"}]
+text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+inputs = tokenizer(text, return_tensors="pt").to(model.device)
+outputs = model.generate(**inputs, max_new_tokens=512)
 print(tokenizer.decode(outputs[0], skip_special_tokens=True))
 ```
 
-## Links
+### Run with MLX (Apple Silicon)
 
-- **HuggingFace**: [huggingface.co/zenlm](https://huggingface.co/zenlm)
-- **GitHub**: [github.com/zenlm](https://github.com/zenlm)
-- **Training Framework**: [Zoo Gym](https://github.com/zooai/gym)
+```bash
+pip install mlx-lm
+python -m mlx_lm.generate --model zenlm/zen4-max --prompt "Explain quantum computing"
+```
+
+### Run with Ollama
+
+```bash
+ollama run zen4
+```
+
+## Key Features
+
+- **Abliterated**: Safety restrictions removed via orthogonalization of refusal directions
+- **Efficient MoE**: Flagship models use only 3B active parameters from 30B-80B total
+- **Long Context**: Up to 256K tokens on MoE models, 32K on dense models
+- **Open Weights**: All models available on [HuggingFace](https://huggingface.co/zenlm)
+
+## Resources
+
+- [All Models on HuggingFace](https://huggingface.co/zenlm)
+- [GitHub Organization](https://github.com/zenlm)
+- [Zen LM Website](https://zenlm.org)
+- [Hanzo AI](https://hanzo.ai)
