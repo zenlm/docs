@@ -28,7 +28,7 @@ cd zen-trainer
 # Train Zen4 Mini (smallest, fastest)
 python train_identity.py --model mini
 
-# Train Zen4 Max Pro (flagship)
+# Train Zen4 Pro Max (flagship)
 python train_identity.py --model maxpro
 ```
 
@@ -40,7 +40,7 @@ python train_identity.py --model maxpro
 | Zen4 | 8B | 8 | 200 | ~10 min |
 | Zen4 Pro | 14B | 8 | 200 | ~20 min |
 | Zen4 Max | 30B MoE | 8 | 200 | ~15 min |
-| Zen4 Max Pro | 80B MoE | 8 | 200 | ~25 min |
+| Zen4 Pro Max | 80B MoE | 8 | 200 | ~25 min |
 | Zen4 Coder Flash | 31B MoE | 8 | 200 | ~15 min |
 | Zen4 Coder | 80B MoE | 8 | 200 | ~25 min |
 
@@ -101,4 +101,4 @@ Pipeline: verify download -> push to HF -> identity train -> convert GGUF + MLX 
 | Zen4 (8B) | 16 GB | 32 GB |
 | Zen4 Pro (14B) | 32 GB | 64 GB |
 | Zen4 Max/Coder Flash (30B MoE) | 32 GB | 64 GB |
-| Zen4 Max Pro/Coder (80B MoE) | 64 GB | 128 GB |
+| Zen4 Pro Max/Coder (80B MoE) | 64 GB | 128 GB |

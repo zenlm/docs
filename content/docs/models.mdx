@@ -15,7 +15,7 @@ Dense and MoE models for desktop and edge deployment. All built on abliterated Q
 | **Zen4** | 8B | 8B | Qwen3-8B | 32K | Apache 2.0 |
 | **Zen4 Pro** | 14B | 14B | Qwen3-14B | 32K | Apache 2.0 |
 | **Zen4 Max** | 30B MoE | 3B | Qwen3-30B-A3B | 256K | Apache 2.0 |
-| **Zen4 Max Pro** | 80B MoE | 3B | Qwen3-Next-80B-A3B | 256K | Apache 2.0 |
+| **Zen4 Pro Max** | 80B MoE | 3B | Qwen3-Next-80B-A3B | 256K | Apache 2.0 |
 
 ### Zen4 Mini (4B)
 
@@ -41,11 +41,11 @@ Flagship efficient model. 30B total with only 3B active via MoE.
 
 - [HuggingFace](https://huggingface.co/zenlm/zen4-max) | [GitHub](https://github.com/zenlm/zen4-max)
 
-### Zen4 Max Pro (80B MoE) - Flagship
+### Zen4 Pro Max (80B MoE) - Flagship
 
 The ultimate consumer model. Hybrid Gated DeltaNet + Gated Attention + MoE architecture.
 
-- [HuggingFace](https://huggingface.co/zenlm/zen4-max-pro) | [GitHub](https://github.com/zenlm/zen4-max-pro)
+- [HuggingFace](https://huggingface.co/zenlm/zen4-pro-max) | [GitHub](https://github.com/zenlm/zen4-pro-max)
 
 ---
 
@@ -116,8 +116,8 @@ All locally-runnable models are available in multiple formats:
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 # Load any Zen4 model
-model = AutoModelForCausalLM.from_pretrained("zenlm/zen4-max-pro")
-tokenizer = AutoTokenizer.from_pretrained("zenlm/zen4-max-pro")
+model = AutoModelForCausalLM.from_pretrained("zenlm/zen4-pro-max")
+tokenizer = AutoTokenizer.from_pretrained("zenlm/zen4-pro-max")
 
 messages = [{"role": "user", "content": "Hello!"}]
 text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
