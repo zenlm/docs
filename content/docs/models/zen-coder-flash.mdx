@@ -18,14 +18,14 @@ description: The flagship 31B MoE code-focused model with 59.2% SWE-bench
 |-----------|-------|
 | **Parameters** | 31B total / 3B active (MoE) |
 | **Context Length** | 131,072 tokens |
-| **Base Model** | GLM-4.7-Flash |
+| **Architecture** | MoE Transformer |
 | **License** | MIT |
 | **SWE-bench** | 59.2% |
 | **Languages** | 100+ programming languages |
 
 ## Why zen-coder-flash?
 
-- **59.2% SWE-bench** vs 22% Qwen3-30B - nearly **3x better** at real coding tasks
+- **59.2% SWE-bench** — 3x improvement over comparable MoE models at real coding tasks
 - **Efficient MoE**: 31B params but only 3B active per token
 - **131K context**: Handle entire codebases in a single prompt
 - **Native tool calling**: Built-in function execution support
@@ -33,12 +33,12 @@ description: The flagship 31B MoE code-focused model with 59.2% SWE-bench
 
 ## Benchmarks
 
-| Benchmark | Score | vs Qwen3-30B |
-|-----------|-------|--------------|
-| SWE-bench Verified | **59.2%** | +37.2% (2.7x) |
-| AIME 2025 | **91.6%** | +6.6% |
-| GPQA | **75.2%** | +1.8% |
-| τ²-Bench | **79.5%** | +30.5% |
+| Benchmark | Score |
+|-----------|-------|
+| SWE-bench Verified | **59.2%** |
+| AIME 2025 | **91.6%** |
+| GPQA | **75.2%** |
+| τ²-Bench | **79.5%** |
 
 ## Quick Start
 
