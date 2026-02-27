@@ -17,7 +17,7 @@ description: 7B multimodal model for text, image, and audio
 |-----------|-------|
 | **Parameters** | ~7B |
 | **Context Length** | 32K tokens |
-| **Base Model** | Qwen3-Omni (NOT Qwen2.5!) |
+| **Architecture** | Multimodal MoDE |
 | **Modalities** | Text, Image, Audio/Speech |
 | **License** | Apache 2.0 |
 
@@ -41,7 +41,3 @@ model = AutoModelForCausalLM.from_pretrained(
 )
 processor = AutoProcessor.from_pretrained("zenlm/zen-omni")
 ```
-
-<Callout type="warning">
-  zen-omni is based on Qwen3-Omni, NOT Qwen2.5. All Zen models use Qwen3+ architecture.
-</Callout>

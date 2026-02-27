@@ -7,19 +7,19 @@ description: Complete Zen4 model family - Consumer, Coder, and Ultra tiers
 
 ## Consumer Line {#consumer}
 
-Dense and MoE models for desktop and edge deployment. All built on abliterated Qwen3 weights.
+Dense and MoE models for desktop and edge deployment. All built on abliterated open-source weights.
 
-| Model | Parameters | Active | Base | Context | License |
-|-------|-----------|--------|------|---------|---------|
-| **Zen4 Mini** | 4B | 4B | Qwen3-4B-Instruct-2507 | 32K | Apache 2.0 |
-| **Zen4** | 8B | 8B | Qwen3-8B | 32K | Apache 2.0 |
-| **Zen4 Pro** | 14B | 14B | Qwen3-14B | 32K | Apache 2.0 |
-| **Zen4 Max** | 30B MoE | 3B | Qwen3-30B-A3B | 256K | Apache 2.0 |
-| **Zen4 Pro Max** | 80B MoE | 3B | Qwen3-Next-80B-A3B | 256K | Apache 2.0 |
+| Model | Parameters | Active | Context | License |
+|-------|-----------|--------|---------|---------|
+| **Zen4 Mini** | 4B | 4B | 32K | Apache 2.0 |
+| **Zen4** | 8B | 8B | 32K | Apache 2.0 |
+| **Zen4 Pro** | 14B | 14B | 32K | Apache 2.0 |
+| **Zen4 Max** | 30B MoE | 3B | 256K | Apache 2.0 |
+| **Zen4 Pro Max** | 80B MoE | 3B | 256K | Apache 2.0 |
 
 ### Zen4 Mini (4B)
 
-Ultra-efficient for edge and mobile. Full Qwen3 quality at 4B parameters.
+Ultra-efficient for edge and mobile. Full quality at 4B parameters.
 
 - [HuggingFace](https://huggingface.co/zenlm/zen4-mini) | [GitHub](https://github.com/zenlm/zen4-mini)
 
@@ -53,15 +53,15 @@ The ultimate consumer model. Hybrid Gated DeltaNet + Gated Attention + MoE archi
 
 Specialized models for agentic programming and software engineering.
 
-| Model | Parameters | Active | Base | Context | License |
-|-------|-----------|--------|------|---------|---------|
-| **Zen4 Coder Flash** | 31B MoE | 3B | GLM-4.7-Flash | 131K | MIT |
-| **Zen4 Coder** | 80B MoE | 3B | Qwen3-Coder-Next | 256K | Apache 2.0 |
-| **Zen4 Coder Pro** | 355B | 355B | GLM-4.7 | 200K | MIT |
+| Model | Parameters | Active | Context | License |
+|-------|-----------|--------|---------|---------|
+| **Zen4 Coder Flash** | 31B MoE | 3B | 131K | MIT |
+| **Zen4 Coder** | 80B MoE | 3B | 256K | Apache 2.0 |
+| **Zen4 Coder Pro** | 355B | 355B | 200K | MIT |
 
 ### Zen4 Coder Flash (31B MoE)
 
-Fast coding model for rapid iteration. GLM-4.7-Flash base with MoE efficiency.
+Fast coding model for rapid iteration. MoE architecture for maximum efficiency.
 
 - [HuggingFace](https://huggingface.co/zenlm/zen4-coder-flash) | [GitHub](https://github.com/zenlm/zen4-coder-flash)
 
@@ -73,7 +73,7 @@ Fast coding model for rapid iteration. GLM-4.7-Flash base with MoE efficiency.
 
 ### Zen4 Coder Pro (355B) - Cloud Only
 
-Dense 355B coding powerhouse. GLM-4.7 base for maximum code intelligence.
+Dense 355B coding powerhouse for maximum code intelligence.
 
 - [HuggingFace](https://huggingface.co/zenlm/zen4-coder-pro) | [GitHub](https://github.com/zenlm/zen4-coder-pro)
 
@@ -83,20 +83,48 @@ Dense 355B coding powerhouse. GLM-4.7 base for maximum code intelligence.
 
 Trillion-parameter models for cloud deployment.
 
-| Model | Parameters | Active | Base | Context | Status |
-|-------|-----------|--------|------|---------|--------|
-| **Zen4 Ultra** | 1.04T MoE | 32B | Kimi K2.5 Thinking | 256K | Cloud Only |
-| **Zen4 Ultra Max** | 1T+ MoE | TBD | DeepSeek V4 | 1M | Coming Soon |
+| Model | Parameters | Active | Context | Status |
+|-------|-----------|--------|---------|--------|
+| **Zen4 Ultra** | 1.04T MoE | 32B | 256K | Cloud Only |
+| **Zen4 Ultra Max** | 1T+ MoE | TBD | 1M | Coming Soon |
 
 ### Zen4 Ultra (1.04T MoE) - Cloud
 
-Trillion-parameter frontier model with 384 experts and vision capabilities via MoonViT.
+Trillion-parameter frontier model with 384 experts and native vision capabilities.
 
 - [HuggingFace](https://huggingface.co/zenlm/zen4-ultra) | [GitHub](https://github.com/zenlm/zen4-ultra)
 
 ### Zen4 Ultra Max (1T+ MoE) - Coming Soon
 
-Next-generation model based on DeepSeek V4 with 1M context window.
+Next-generation trillion-parameter model with 1M context window.
+
+---
+
+## Zen5 — Next Generation {#zen5}
+
+<Callout type="info">
+**Zen5 Ultra** — 2T+ parameter MoDE (Mixture of Distilled Experts) model. The largest open-weight model in history, trained on-chain via NVIDIA TEE confidential compute on [hanzo.network](https://hanzo.network).
+</Callout>
+
+| Model | Parameters | Active | Architecture | Context | Status |
+|-------|-----------|--------|--------------|---------|--------|
+| **Zen5 Ultra** | 2T+ MoDE | TBD | Mixture of Distilled Experts | 1M+ | Research Preview |
+
+### Key Features
+
+- **2T+ parameters** — the largest open-weight model ever released
+- **MoDE architecture** — Mixture of Distilled Experts for efficient routing
+- **On-chain training** — verifiable training via NVIDIA TEE on [hanzo.network](https://hanzo.network)
+- **1M+ context** — full codebase and document understanding
+- **GT-QLoRA** — Gate-Targeted fine-tuning for MoE behavioral modification ([paper](/papers/zen4-ultra-gt-qlora.pdf))
+
+### Request Research Access
+
+Zen5 is in private research preview. Researchers and institutions can request early access to preprints, weights, and evaluation under a special research license.
+
+- [Request Research Access](https://hanzo.ai/contact) — for researchers and institutions
+- [Join Waitlist](https://cloud.hanzo.ai/signup) — for API access when available
+- [GT-QLoRA Paper](/papers/zen4-ultra-gt-qlora.pdf) — our MoE fine-tuning research
 
 ---
 
@@ -132,7 +160,7 @@ In addition to Zen4, the Zen LM family includes multimodal and specialized model
 
 | Model | Type | Description |
 |-------|------|-------------|
-| zen-omni | Multimodal | Text + Vision + Audio (Qwen3-Omni) |
+| zen-omni | Multimodal | Text + Vision + Audio |
 | zen-vl | Vision-Language | Image understanding with function calling |
 | zen-video | Video | Text-to-video and image-to-video generation |
 | zen-3d | 3D Assets | 3D mesh generation from text/image |

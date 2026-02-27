@@ -37,8 +37,8 @@ For high-throughput production serving:
 ```bash
 vllm serve zenlm/zen-coder-flash \
     --tensor-parallel-size 4 \
-    --tool-call-parser glm47 \
-    --reasoning-parser glm45 \
+    --tool-call-parser hermes \
+    --reasoning-parser chatml \
     --enable-auto-tool-choice
 ```
 
@@ -50,7 +50,7 @@ With EAGLE speculative decoding:
 python -m sglang.launch_server \
     --model-path zenlm/zen-coder-flash \
     --tp-size 4 \
-    --tool-call-parser glm47 \
+    --tool-call-parser hermes \
     --speculative-algorithm EAGLE
 ```
 
