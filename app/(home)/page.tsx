@@ -11,19 +11,29 @@ export default function HomePage() {
           Frontier AI models for code, reasoning, and multimodal understanding
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="p-6 rounded-lg border bg-card">
-            <h3 className="font-semibold text-lg mb-2">zen-max</h3>
-            <p className="text-sm text-muted-foreground">671B MoE • 71.3% SWE-bench</p>
+            <h3 className="font-semibold text-lg mb-2">zen4-ultra</h3>
+            <p className="text-sm text-muted-foreground">1.04T MoE • 384 experts • 256K ctx</p>
           </div>
           <div className="p-6 rounded-lg border bg-card ring-2 ring-primary">
-            <h3 className="font-semibold text-lg mb-2">zen-coder-flash ⭐</h3>
-            <p className="text-sm text-muted-foreground">31B MoE • 59.2% SWE-bench</p>
+            <h3 className="font-semibold text-lg mb-2">zen4-pro-max</h3>
+            <p className="text-sm text-muted-foreground">80B MoE • Flagship consumer</p>
           </div>
           <div className="p-6 rounded-lg border bg-card">
-            <h3 className="font-semibold text-lg mb-2">zen-nano</h3>
-            <p className="text-sm text-muted-foreground">0.6B • Edge deployment</p>
+            <h3 className="font-semibold text-lg mb-2">zen4-coder-flash</h3>
+            <p className="text-sm text-muted-foreground">31B MoE • 59.2% SWE-bench</p>
           </div>
+        </div>
+
+        <div className="mb-12 p-4 rounded-lg border border-dashed bg-muted/50 text-center">
+          <p className="text-sm font-medium mb-1">Zen5 Ultra — 2T+ MoDE — Coming Soon</p>
+          <p className="text-xs text-muted-foreground">
+            The largest open-weight model in history.{' '}
+            <Link href="/docs/models#zen5" className="underline hover:no-underline">
+              Request research access
+            </Link>
+          </p>
         </div>
 
         <div className="flex gap-4 justify-center">

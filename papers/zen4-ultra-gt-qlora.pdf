@@ -1,0 +1,69 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792]
+   /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+
+4 0 obj
+<< /Length 800 >>
+stream
+BT
+/F1 20 Tf
+50 720 Td
+(GT-QLoRA: Gate-Targeted Fine-Tuning) Tj
+0 -28 Td
+(for Large MoE Language Models) Tj
+/F1 12 Tf
+0 -30 Td
+(Zen LM Research - Hanzo AI) Tj
+0 -16 Td
+(https://zenlm.org | 2026) Tj
+/F1 10 Tf
+0 -30 Td
+(Abstract:) Tj
+0 -16 Td
+(Standard linear abliteration fails on MoE architectures like Kimi K2.5) Tj
+0 -14 Td
+(because refusal is encoded in expert routing, not the residual stream.) Tj
+0 -14 Td
+(We introduce GT-QLoRA, combining LoRA with direct gate weight unfreezing.) Tj
+0 -14 Td
+(MoE gates use nn.Parameter not nn.Linear, so LoRA cannot target them.) Tj
+0 -14 Td
+(Direct unfreezing allows backprop to modify expert routing decisions.) Tj
+0 -28 Td
+(Full paper: https://github.com/zenlm/zen4-ultra-trainer) Tj
+0 -14 Td
+(LaTeX source: paper/main.tex) Tj
+0 -14 Td
+(HuggingFace: https://huggingface.co/zenlm/zen4-ultra) Tj
+ET
+endstream
+endobj
+
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000314 00000 n 
+0000000266 00000 n 
+
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1165
+%%EOF
