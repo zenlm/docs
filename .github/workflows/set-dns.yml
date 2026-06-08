@@ -1,0 +1,75 @@
+name: Set docs.zenlm.org DNS (Cloudflare via KMS)
+
+# One-shot: pull the Cloudflare API token from Hanzo KMS and upsert the
+# docs.zenlm.org CNAME -> zenlm.github.io so the docs site gets its custom domain.
+on:
+  workflow_dispatch:
+    inputs:
+      record:
+        description: 'subdomain to set'
+        default: 'docs.zenlm.org'
+      target:
+        description: 'CNAME target'
+        default: 'zenlm.github.io'
+
+permissions:
+  contents: read
+
+jobs:
+  set-dns:
+    runs-on: ubuntu-latest
+    env:
+      KMS_CLIENT_ID: ${{ secrets.KMS_CLIENT_ID }}
+      KMS_CLIENT_SECRET: ${{ secrets.KMS_CLIENT_SECRET }}
+      KMS_BASE: https://api.hanzo.ai/v1/kms
+      KMS_BASE_FALLBACK: https://kms.hanzo.ai/v1/kms
+      RECORD: ${{ github.event.inputs.record }}
+      TARGET: ${{ github.event.inputs.target }}
+    steps:
+      - name: Pull Cloudflare token from KMS and upsert the CNAME
+        run: |
+          set -euo pipefail
+          ZONE="${RECORD#*.}"   # docs.zenlm.org -> zenlm.org
+          SUB="${RECORD%%.*}"   # docs.zenlm.org -> docs
+
+          # --- 1. KMS auth: clientId/clientSecret -> accessToken (no /api/) ---
+          login() {
+            curl -sf -X POST "$1/auth/login" -H 'Content-Type: application/json' \
+              -d "{\"clientId\":\"${KMS_CLIENT_ID}\",\"clientSecret\":\"${KMS_CLIENT_SECRET}\"}" 2>/dev/null
+          }
+          BASE="$KMS_BASE"
+          AUTH=$(login "$BASE" || true)
+          if [ -z "${AUTH:-}" ]; then BASE="$KMS_BASE_FALLBACK"; AUTH=$(login "$BASE" || true); fi
+          TOK=$(printf '%s' "$AUTH" | jq -r '.accessToken // .access_token // empty')
+          if [ -z "$TOK" ]; then echo "::error::KMS login failed"; exit 1; fi
+          echo "::add-mask::$TOK"
+          echo "KMS auth ok via $BASE"
+
+          # --- 2. Fetch the Cloudflare token (try known org/path layouts) ---
+          getsec() { # org path name
+            curl -sf -H "Authorization: Bearer $TOK" \
+              "$BASE/orgs/$1/secrets/$2/$3?env=prod" 2>/dev/null | jq -r '.secret.value // .value // empty'
+          }
+          CF_TOKEN=""
+          for combo in "hanzo deploy CLOUDFLARE_API_TOKEN" "hanzo prod/deploy CLOUDFLARE_API_TOKEN" \
+                       "hanzoai deploy CLOUDFLARE_API_TOKEN" "hanzo deploy CF_API_TOKEN"; do
+            set -- $combo
+            v=$(getsec "$1" "$2" "$3" || true)
+            if [ -n "${v:-}" ]; then CF_TOKEN="$v"; echo "got CF token from org=$1 path=$2 name=$3"; break; fi
+          done
+          if [ -z "$CF_TOKEN" ]; then echo "::error::CLOUDFLARE_API_TOKEN not found in KMS"; exit 1; fi
+          echo "::add-mask::$CF_TOKEN"
+
+          # --- 3. Cloudflare: find zone, upsert the CNAME (DNS-only for Pages) ---
+          cf() { curl -sf -H "Authorization: Bearer $CF_TOKEN" -H 'Content-Type: application/json' "$@"; }
+          ZID=$(cf "https://api.cloudflare.com/client/v4/zones?name=$ZONE" | jq -r '.result[0].id // empty')
+          if [ -z "$ZID" ]; then echo "::error::zone $ZONE not found (token scope?)"; exit 1; fi
+          echo "zone $ZONE -> $ZID"
+          REC=$(printf '{"type":"CNAME","name":"%s","content":"%s","ttl":1,"proxied":false}' "$SUB" "$TARGET")
+          RID=$(cf "https://api.cloudflare.com/client/v4/zones/$ZID/dns_records?type=CNAME&name=$RECORD" | jq -r '.result[0].id // empty')
+          if [ -n "$RID" ]; then
+            cf -X PUT "https://api.cloudflare.com/client/v4/zones/$ZID/dns_records/$RID" -d "$REC" | jq -r '"updated: \(.result.name) -> \(.result.content) (proxied=\(.result.proxied))"'
+          else
+            cf -X POST "https://api.cloudflare.com/client/v4/zones/$ZID/dns_records" -d "$REC" | jq -r '"created: \(.result.name) -> \(.result.content) (proxied=\(.result.proxied))"'
+          fi
+          echo "✅ ${RECORD} CNAME -> ${TARGET}"
