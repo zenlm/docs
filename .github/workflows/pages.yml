@@ -26,7 +26,9 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-      - name: Install (pnpm; resolves @hanzo workspace override + builds esbuild/sharp)
+      - name: Allow native build scripts (esbuild, sharp) non-interactively
+        run: pnpm config set dangerouslyAllowAllBuilds true
+      - name: Install (pnpm; resolves @hanzo workspace override)
         run: pnpm install --no-frozen-lockfile
       - name: Build static export
         run: pnpm exec next build
