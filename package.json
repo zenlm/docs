@@ -9,11 +9,12 @@
     "types:check": "@hanzo/docs-mdx && next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@hanzo/docs-base-ui": "latest",
     "@hanzo/docs-core": "latest",
     "@hanzo/docs-mdx": "latest",
     "@hanzo/docs-ui": "latest",
     "lucide-react": "^0.563.0",
-    "next": "^15.3.0",
+    "next": "^16.0.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "tailwind-merge": "^3.4.0"

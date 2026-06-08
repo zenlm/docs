@@ -1,0 +1,5 @@
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
+overrides:
+  '@hanzo/docs-tailwind': 0.0.3

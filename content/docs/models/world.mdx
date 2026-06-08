@@ -1,0 +1,75 @@
+---
+title: World Models
+description: Generative world models for interactive video scene synthesis with camera control.
+---
+
+## Overview
+
+Zen World Models are diffusion-based generative models that synthesize coherent, interactive video scenes from text prompts and camera trajectories. Built on the Zen Mixture-of-Distilled-Experts (MoDE) architecture, these models enable exploration of virtual environments through camera control, making them ideal for robotics simulation, game development, and interactive media generation.
+
+## Available Models
+
+| Model | Params | Context | HF | Paper |
+|-------|--------|---------|----|----|
+| Zen World | 13B | — | [weights](https://huggingface.co/zenlm/zen-world) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-world.pdf) |
+| Zen Voyager | 32.8B | — | [weights](https://huggingface.co/zenlm/zen-voyager) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-voyager.pdf) |
+
+## Quick Start
+
+### Using Transformers (Local)
+
+Install the diffusers library and load a model:
+
+```python
+from diffusers import AutoPipelineForText2Video
+import torch
+
+model_id = "zenlm/zen-world"
+pipe = AutoPipelineForText2Video.from_pretrained(
+    model_id,
+    torch_dtype=torch.bfloat16
+)
+pipe = pipe.to("cuda")
+
+# Generate video frames from a text prompt
+video_frames = pipe(
+    "A drone flying over a tropical coastline at golden hour"
+).frames[0]
+```
+
+### Via Zen API (Recommended)
+
+For easy access without local GPU requirements, use the OpenAI-compatible Zen API endpoint at `api.hanzo.ai`:
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://api.hanzo.ai/v1",
+    api_key="your-api-key"
+)
+
+response = client.images.generate(
+    model="zen-world",
+    prompt="A drone flying over a tropical coastline at golden hour",
+    size="1280x720"
+)
+
+print(response.data[0].url)
+```
+
+## Model Details
+
+**Zen World** is a 13B parameter generative world model that renders coherent video scenes from text descriptions. It excels at continuous scene generation and is ideal for tasks requiring rapid iteration on environment design.
+
+**Zen Voyager** is a 32.8B parameter camera-controlled world model that generates explorable, interactive video scenes. It supports dynamic camera trajectories, making it suited for applications requiring camera control and spatial navigation through virtual environments.
+
+Both models are built on the Zen MoDE architecture, offering a balance between inference efficiency and generation quality. They leverage diffusion-based generation for pixel-perfect scene synthesis.
+
+## Use Cases
+
+- **Robotics Simulation**: Generate training environments for robot navigation and manipulation
+- **Game Development**: Create dynamic, procedurally-generated game worlds
+- **Visual Effects**: Synthesize background plates and environmental scenes
+- **Interactive Media**: Build explorable virtual environments with camera control
+- **Research**: Study emergent world dynamics and physics-based scene generation

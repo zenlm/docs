@@ -1,0 +1,115 @@
+---
+title: Image Generation
+description: Generate high-quality images from text prompts and edit existing images with Zen's 12B and 7B diffusion models, optimized for speed, creativity, and precision.
+---
+
+Zen's Image Generation family offers a comprehensive suite of diffusion models for text-to-image synthesis and image-to-image editing. Built on Mixture of Distilled Experts (MoDE) architecture, these models deliver photorealistic output with precise prompt following, specialized variants for speed and creativity, and Japanese-optimized generation.
+
+## Models
+
+| Model | Params | Resolution | Pipeline | HF | Paper |
+|-------|--------|-----------|----------|----|----|
+| Zen3 Image | 12B | 1024px | text-to-image | [weights](https://huggingface.co/zenlm/zen3-image) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-artist_whitepaper.pdf) |
+| Zen3 Image Fast | 12B | 1024px | text-to-image | [weights](https://huggingface.co/zenlm/zen3-image-fast) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-artist_whitepaper.pdf) |
+| Zen3 Image Max | 12B | 2048px | text-to-image | [weights](https://huggingface.co/zenlm/zen3-image-max) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-artist_whitepaper.pdf) |
+| Zen3 Image Playground | 12B | 1024px | text-to-image | [weights](https://huggingface.co/zenlm/zen3-image-playground) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-artist_whitepaper.pdf) |
+| Zen3 Image Dev | 12B | 1024px | text-to-image | [weights](https://huggingface.co/zenlm/zen3-image-dev) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-artist_whitepaper.pdf) |
+| Zen3 Image SDXL | 12B | 1024px | text-to-image | [weights](https://huggingface.co/zenlm/zen3-image-sdxl) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-artist_whitepaper.pdf) |
+| Zen3 Image JP | 12B | - | text-to-image | [weights](https://huggingface.co/zenlm/zen3-image-jp) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-artist_whitepaper.pdf) |
+| Zen3 Image SSD | 12B | - | text-to-image | [weights](https://huggingface.co/zenlm/zen3-image-ssd) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-artist_whitepaper.pdf) |
+| Zen Image Edit | 7B | 1024px | image-to-image | [weights](https://huggingface.co/zenlm/zen-image-edit) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-artist-edit_whitepaper.pdf) |
+
+## Quick Start
+
+### Text-to-Image with Transformers
+
+```python
+from diffusers import AutoPipelineForText2Image
+import torch
+
+# Load the Zen3 Image model
+model_id = "zenlm/zen3-image"
+pipe = AutoPipelineForText2Image.from_pretrained(
+    model_id,
+    torch_dtype=torch.bfloat16
+)
+pipe = pipe.to("cuda")
+
+# Generate an image
+prompt = "A serene mountain landscape at sunset, photorealistic, cinematic lighting"
+image = pipe(prompt).images[0]
+image.save("output.png")
+```
+
+### Image Editing with Zen Image Edit
+
+```python
+from diffusers import AutoPipelineForInpainting
+import torch
+from PIL import Image
+
+model_id = "zenlm/zen-image-edit"
+pipe = AutoPipelineForInpainting.from_pretrained(
+    model_id,
+    torch_dtype=torch.bfloat16
+)
+pipe = pipe.to("cuda")
+
+# Load your base image and mask
+image = Image.open("base_image.png")
+mask_image = Image.open("mask.png")  # White regions to edit
+
+# Generate edited image
+prompt = "A red sunset sky"
+edited_image = pipe(
+    prompt=prompt,
+    image=image,
+    mask_image=mask_image
+).images[0]
+edited_image.save("edited.png")
+```
+
+## Zen API Access
+
+For production deployments, use the OpenAI-compatible Zen API endpoint:
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://api.hanzo.ai/v1",
+    api_key="your-api-key"
+)
+
+# Generate image via API
+response = client.images.generate(
+    model="zen3-image",
+    prompt="A serene mountain landscape at sunset, photorealistic",
+    size="1024x1024",
+    quality="hd"
+)
+
+print(response.data[0].url)
+```
+
+Get your API key at [console.hanzo.ai](https://console.hanzo.ai) — $5 free credit on signup.
+
+## Model Variants
+
+**Zen3 Image** — Flagship photorealistic text-to-image model with precise prompt adherence.
+
+**Zen3 Image Fast** — Optimized for low-latency inference, ideal for real-time generation workflows.
+
+**Zen3 Image Max** — Extended to 2048px resolution for maximum detail and quality.
+
+**Zen3 Image Playground** — Creative variant tuned for experimental and artistic outputs.
+
+**Zen3 Image Dev** — Developer-focused variant for research and fine-tuning.
+
+**Zen3 Image SDXL** — Compatible with SDXL tooling and ecosystem.
+
+**Zen3 Image JP** — Japanese-language optimized diffusion for culturally fluent visuals.
+
+**Zen3 Image SSD** — Lightning-fast SSD-based diffusion for instant generation.
+
+**Zen Image Edit** — Instruction-following image editor for targeted modifications and inpainting.

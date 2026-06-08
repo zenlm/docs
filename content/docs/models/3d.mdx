@@ -1,0 +1,84 @@
+---
+title: 3D
+description: Generate 3D assets from images and text prompts with Zen 3D.
+---
+
+## Overview
+
+Zen 3D transforms images and text prompts into high-quality 3D assets. Built on the Zen MoDE architecture, it provides a unified interface for converting 2D inputs into interactive 3D representations suitable for games, visualization, and design workflows.
+
+## Models
+
+| Model | Params | Context | HF | Paper |
+|-------|--------|---------|-----|-------|
+| Zen 3D | — | — | [weights](https://huggingface.co/zenlm/zen-3d) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-3d.pdf) |
+
+## Quick start
+
+### Using Transformers
+
+```python
+from transformers import AutoImageProcessor, AutoModel
+import torch
+from PIL import Image
+
+# Load model and processor
+model_id = "zenlm/zen-3d"
+processor = AutoImageProcessor.from_pretrained(model_id)
+model = AutoModel.from_pretrained(model_id)
+
+# Load an image
+image = Image.open("path/to/image.jpg")
+
+# Process and generate 3D representation
+inputs = processor(images=image, return_tensors="pt")
+
+with torch.no_grad():
+    outputs = model(**inputs)
+
+# outputs contain 3D mesh or point cloud representation
+```
+
+### Using the Zen API
+
+For production deployments, use the OpenAI-compatible Zen API:
+
+```python
+import requests
+
+headers = {
+    "Authorization": f"Bearer {HANZO_API_KEY}",
+    "Content-Type": "application/json"
+}
+
+response = requests.post(
+    "https://api.hanzo.ai/v1/generations/3d",
+    headers=headers,
+    json={
+        "model": "zen-3d",
+        "image_url": "https://example.com/image.jpg",
+        "prompt": "high-quality game asset"
+    }
+)
+
+# Returns 3D mesh in standard format (glTF, USD, etc.)
+result = response.json()
+```
+
+Get your free API key at [console.hanzo.ai](https://console.hanzo.ai) — $5 free credit on signup.
+
+## Key capabilities
+
+- **Image-to-3D**: Convert photorealistic images into 3D models
+- **Text-to-3D**: Generate 3D assets from natural language descriptions
+- **Multi-format support**: Export to glTF, USD, OBJ, and custom formats
+- **Interactive meshes**: Optimized geometry for real-time rendering
+- **Batch processing**: Efficiently handle multiple conversions
+
+## Use cases
+
+- Game asset generation and prototyping
+- 3D visualization and design tools
+- Product photography to interactive models
+- Avatar and character generation
+- Architectural visualization

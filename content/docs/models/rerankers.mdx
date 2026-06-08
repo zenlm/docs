@@ -1,0 +1,141 @@
+---
+title: Rerankers
+description: High-performance cross-encoder reranking models for retrieval-augmented generation and semantic search.
+---
+
+# Rerankers
+
+Zen Rerankers are cross-encoder models optimized for retrieval-augmented generation (RAG), semantic search, and search quality improvement. They re-score retrieved passages or documents to precisely rank relevance, integrating seamlessly into multi-stage retrieval pipelines.
+
+All Zen Reranker models support 100+ languages and are available in multiple formats (SafeTensors, GGUF, and MLX) for flexible deployment across edge, CPU, and GPU infrastructure.
+
+## Model Family
+
+| Model | Parameters | Context | Weights | Paper |
+|-------|-----------|---------|---------|-------|
+| Zen Reranker | 4.02B | 32K | [weights](https://huggingface.co/zenlm/zen-reranker) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-reranker.pdf) |
+| Zen Reranker 0.6B | 0.6B | 32K | [weights](https://huggingface.co/zenlm/zen-reranker-0.6B) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-reranker.pdf) |
+| Zen Reranker 0.6B (GGUF) | 0.6B | 8K | [weights](https://huggingface.co/zenlm/zen-reranker-0.6B-GGUF) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-reranker.pdf) |
+| Zen Reranker 4B | 4.02B | 32K | [weights](https://huggingface.co/zenlm/zen-reranker-4B) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-reranker.pdf) |
+| Zen Reranker 4B (GGUF) | 4B | 8K | [weights](https://huggingface.co/zenlm/zen-reranker-4B-GGUF) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-reranker.pdf) |
+| Zen Reranker 8B | 8.19B | 32K | [weights](https://huggingface.co/zenlm/zen-reranker-8B) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-reranker.pdf) |
+| Zen Reranker 8B (GGUF) | 8B | 8K | [weights](https://huggingface.co/zenlm/zen-reranker-8B-GGUF) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-reranker.pdf) |
+
+## Use Cases
+
+Zen Rerankers excel in:
+
+- **Retrieval-Augmented Generation (RAG)** — re-score retrieved chunks before LLM context injection for higher precision
+- **Search pipelines** — improve document ranking after initial dense or BM25 retrieval
+- **Question answering** — score and rank candidate answers for relevance
+- **Semantic deduplication** — cluster documents based on relevance scoring
+- **Cross-lingual retrieval** — multilingual ranking for global applications
+
+## Quick Start
+
+Install dependencies:
+
+```bash
+pip install transformers torch
+```
+
+Basic reranking with the 4B model:
+
+```python
+import torch
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+
+model_name = "zenlm/zen-reranker-4B"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForSequenceClassification.from_pretrained(
+    model_name, 
+    torch_dtype=torch.float16
+)
+
+def rerank(query, passages):
+    """Score and rank passages by relevance to query."""
+    pairs = [[query, p] for p in passages]
+    inputs = tokenizer(
+        pairs, 
+        padding=True, 
+        truncation=True,
+        max_length=512, 
+        return_tensors="pt"
+    )
+    
+    with torch.no_grad():
+        scores = model(**inputs).logits.squeeze(-1)
+    
+    ranked = sorted(
+        zip(passages, scores.tolist()), 
+        key=lambda x: x[1], 
+        reverse=True
+    )
+    return ranked
+
+# Example usage
+query = "What are the benefits of renewable energy?"
+passages = [
+    "Wind and solar power reduce carbon emissions and provide clean electricity.",
+    "Coal is still the most abundant fuel source worldwide.",
+    "Renewable energy reduces dependence on fossil fuels and lowers costs long-term."
+]
+
+results = rerank(query, passages)
+for passage, score in results:
+    print(f"{score:.3f}: {passage}")
+```
+
+With `sentence-transformers`:
+
+```python
+from sentence_transformers import CrossEncoder
+
+model = CrossEncoder("zenlm/zen-reranker-4B")
+
+pairs = [
+    ["What are renewable energy benefits?", "Wind power reduces emissions."],
+    ["What are renewable energy benefits?", "Coal is abundant worldwide."],
+    ["What are renewable energy benefits?", "Solar lowers long-term costs."],
+]
+
+scores = model.predict(pairs)
+
+for pair, score in zip(pairs, scores):
+    print(f"{score:.3f}: {pair[0]} | {pair[1]}")
+```
+
+## Zen API
+
+All Zen Reranker models are also available through the Zen API at **api.hanzo.ai**. This provides a unified OpenAI-compatible inference endpoint:
+
+```bash
+curl -X POST https://api.hanzo.ai/v1/chat/completions \
+  -H "Authorization: Bearer $ZEN_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "zen-reranker-4b",
+    "messages": [...]
+  }'
+```
+
+See the [Zen API documentation](https://docs.zenlm.org/api) for authentication, usage, and pricing.
+
+## Model Selection
+
+- **0.6B** — Edge devices, mobile, minimal latency; lightest footprint
+- **4B** — Balanced quality and speed; recommended for most RAG pipelines
+- **8B** — Highest precision; for demanding production retrieval systems
+
+GGUF variants are optimized for `llama.cpp` and Ollama for CPU-based deployment.
+
+## Technical Details
+
+All Zen Reranker models:
+
+- **Architecture**: Qwen3-based cross-encoder
+- **Pipeline**: text-classification (sequence scoring)
+- **Languages**: 100+ languages (multilingual)
+- **License**: Apache 2.0
+- **Context window**: 32K (SafeTensors) / 8K (GGUF)
+- **Framework**: Transformers / PyTorch compatible

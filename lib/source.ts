@@ -1,10 +1,12 @@
-import { docs } from '@hanzo/docs-mdx/collections/server';
+import { docs } from 'collections/server';
 import { type InferPageType, loader } from '@hanzo/docs-core/source';
 import { lucideIconsPlugin } from '@hanzo/docs-core/source/lucide-icons';
 
 export const source = loader({
   baseUrl: '/docs',
-  source: docs.toFumadocsSource(),
+  // Published @hanzo/docs-mdx runtime still exposes toSource(); becomes
+  // toDocsSource() once the brand-neutral rename ships from hanzoai/docs.
+  source: docs.toSource(),
   plugins: [lucideIconsPlugin()],
 });
 

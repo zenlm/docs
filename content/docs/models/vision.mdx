@@ -1,0 +1,112 @@
+---
+title: Vision-Language
+description: Zen vision-language models for multimodal image and text understanding, OCR, visual reasoning, and agentic tasks—scaling from 0.8B on-device to 235B frontier models.
+---
+
+The Zen Vision-Language family spans edge deployment (0.8B) through frontier multimodal reasoning (235B MoE). Each model supports image and text inputs, with specialized variants for instruction-following, agentic function-calling, and design generation. All models are trained on the Zen MoDE (Mixture of Distilled Experts) architecture with Apache 2.0 licensing.
+
+## Model Family
+
+| Model | Params | Context | HF | Paper |
+|-------|--------|---------|-----|-------|
+| Zen 5 | 35B total / 3B active (MoE) | 256K | [weights](https://huggingface.co/zenlm/zen-5-gguf) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen5_whitepaper.pdf) |
+| Zen 5 Nano 0.8B | 0.87B (dense) | — | [weights](https://huggingface.co/zenlm/zen-5-nano-0.8B-gguf) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen5_whitepaper.pdf) |
+| Zen 5 Nano 2B | 2.27B (dense) | — | [weights](https://huggingface.co/zenlm/zen-5-nano-2B-gguf) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen5_whitepaper.pdf) |
+| Zen 5 Nano 4B (GGUF) | 4.66B | — | [weights](https://huggingface.co/zenlm/zen-5-nano-4B-gguf) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen5_whitepaper.pdf) |
+| Zen 5 Nano 9B (GGUF) | 9.65B | — | [weights](https://huggingface.co/zenlm/zen-5-nano-9B-gguf) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen5_whitepaper.pdf) |
+| Zen 3 VL | 8.77B (30B MoE) | 262K | [weights](https://huggingface.co/zenlm/zen3-vl) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen3-vl_whitepaper.pdf) |
+| Zen VL 4B Instruct | 4B | 32K | [weights](https://huggingface.co/zenlm/zen-vl-4b-instruct) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-vl_whitepaper.pdf) |
+| Zen VL 4B Agent | 4B | 32K | [weights](https://huggingface.co/zenlm/zen-vl-4b-agent) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-vl_whitepaper.pdf) |
+| Zen VL 8B Instruct | 8B | 32K | [weights](https://huggingface.co/zenlm/zen-vl-8b-instruct) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-vl_whitepaper.pdf) |
+| Zen VL 8B Agent | 8B | 32K | [weights](https://huggingface.co/zenlm/zen-vl-8b-agent) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-vl_whitepaper.pdf) |
+| Zen VL 30B Instruct | 30B | 256K | [weights](https://huggingface.co/zenlm/zen-vl-30b-instruct) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-vl_whitepaper.pdf) |
+| Zen VL 30B Agent | 30B | 256K | [weights](https://huggingface.co/zenlm/zen-vl-30b-agent) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-vl_whitepaper.pdf) |
+| Zen Designer | 235B total / 22B active (MoE) | 128K | [weights](https://huggingface.co/zenlm/zen-designer) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-designer-instruct_whitepaper.pdf) |
+| Zen Designer (GGUF) | 235B total / 22B active (MoE) | 256K | [weights](https://huggingface.co/zenlm/zen-designer-gguf) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-designer-instruct_whitepaper.pdf) |
+| Zen Designer 235B A22B Instruct | 236B | 131K | [weights](https://huggingface.co/zenlm/zen-designer-235b-a22b-instruct) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-designer-instruct_whitepaper.pdf) |
+| Zen Designer 235B A22B Thinking | 236B | 131K | [weights](https://huggingface.co/zenlm/zen-designer-235b-a22b-thinking) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-designer-thinking_whitepaper.pdf) |
+
+## Quick Start
+
+Load and run Zen VL 4B Instruct with Hugging Face Transformers:
+
+```python
+from transformers import AutoModelForVision2Seq, AutoProcessor
+from PIL import Image
+import torch
+
+model_id = "zenlm/zen-vl-4b-instruct"
+processor = AutoProcessor.from_pretrained(model_id, trust_remote_code=True)
+model = AutoModelForVision2Seq.from_pretrained(
+    model_id,
+    torch_dtype=torch.bfloat16,
+    device_map="auto",
+    trust_remote_code=True
+)
+
+# Load an image
+image = Image.open("photo.jpg")
+
+# Build multimodal input
+messages = [
+    {"role": "user", "content": "Describe this image in detail."}
+]
+
+text = processor.apply_chat_template(
+    messages,
+    tokenize=False,
+    add_generation_prompt=True
+)
+inputs = processor(
+    text=[text],
+    images=[image],
+    return_tensors="pt"
+).to(model.device)
+
+# Generate response
+outputs = model.generate(**inputs, max_new_tokens=512)
+response = processor.batch_decode(outputs, skip_special_tokens=True)[0]
+print(response)
+```
+
+## API Access
+
+Zen vision-language models are also available via the OpenAI-compatible Zen API endpoint at `api.hanzo.ai`. Use any Zen VL model ID directly with the OpenAI Python client or equivalent:
+
+```python
+from openai import OpenAI
+
+client = OpenAI(base_url="https://api.hanzo.ai/v1", api_key="your-api-key")
+
+response = client.chat.completions.create(
+    model="zen-vl-4b-instruct",
+    messages=[
+        {
+            "role": "user",
+            "content": "What is in this image?"
+        }
+    ]
+)
+
+print(response.choices[0].message.content)
+```
+
+## Model Selection
+
+- **Edge (0.8B–2B)**: Zen 5 Nano series for phones, embedded devices, Raspberry Pi
+- **Balanced (4B–8B)**: Zen VL 4B/8B for laptops, on-premises, VRAM-constrained servers
+- **Frontier Reasoning (30B)**: Zen VL 30B for high-throughput reasoning, long-context documents
+- **Design & VQA (235B)**: Zen Designer series for visual generation, multimodal design tasks
+- **OCR & Vision (8.77B MoE)**: Zen 3 VL for text extraction (32 languages), visual grounding
+
+## Architecture
+
+All Zen vision-language models use the Zen MoDE (Mixture of Distilled Experts) architecture, a sparse conditional computation framework that activates only necessary parameters at inference time. This enables efficient scaling across consumer GPUs while maintaining frontier-class reasoning quality.
+
+Key features:
+- **Sparse MoE**: Only active parameters processed per token (e.g., 3B active in 35B total Zen 5)
+- **Multimodal**: Unified vision and language representation
+- **Long context**: Up to 256K–262K tokens (expandable to 1M)
+- **Tool-calling**: Agent and instruct variants support agentic function-calling
+- **Multilingual**: Broad language coverage and 32-language OCR
+- **Apache 2.0**: Open-source with permissive licensing

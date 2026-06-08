@@ -1,0 +1,144 @@
+---
+title: Safety
+description: Real-time and generative safety moderation across 119 languages with multi-tiered severity classification.
+---
+
+# Safety
+
+Zen Safety models provide comprehensive content moderation and safety classification for AI systems. Built on the Zen architecture, they offer real-time token-level monitoring, generative safety assessment, and multilingual support across 119 languages.
+
+The family spans three core capabilities: **instant streaming moderation** for token-level detection, **generative classification** for detailed prompt and response analysis, and **multilingual safety** across diverse deployment scenarios.
+
+## Models
+
+| Model | Params | Context | Type | HF | Paper |
+|-------|--------|---------|------|----|----|
+| Zen Guard | 3.09B | — | Classification | [weights](https://huggingface.co/zenlm/zen-guard) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-guard_whitepaper.pdf) |
+| Zen Guard Gen | 7.62B | 32K | Classification | [weights](https://huggingface.co/zenlm/zen-guard-gen) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-guard-gen_whitepaper.pdf) |
+| Zen Guard Gen 8B | 7.62B | — | Generation | [weights](https://huggingface.co/zenlm/zen-guard-gen-8b) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-guard-gen_whitepaper.pdf) |
+| Zen Guard Stream | 3B | — | Classification | [weights](https://huggingface.co/zenlm/zen-guard-stream) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-guard-stream_whitepaper.pdf) |
+| Zen Guard Stream 4B | 3.09B | — | Generation | [weights](https://huggingface.co/zenlm/zen-guard-stream-4b) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-guard-stream_whitepaper.pdf) |
+| Zen3 Guard | 5.78B | — | Classification | [weights](https://huggingface.co/zenlm/zen3-guard) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen3-guard_whitepaper.pdf) |
+
+## Quick Start
+
+### Prompt and Response Moderation
+
+Use Zen Guard for real-time safety classification of LLM inputs and outputs:
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import re
+
+model_name = "zenlm/zen-guard"
+
+# Load model and tokenizer
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    torch_dtype="auto",
+    device_map="auto"
+)
+
+def classify_safety(content):
+    """Extract safety classification and categories from model output."""
+    safe_pattern = r"Safety: (Safe|Unsafe|Controversial)"
+    category_pattern = r"(Violent|Non-violent Illegal Acts|Sexual Content|PII|Suicide & Self-Harm|Unethical Acts|Politically Sensitive|Copyright Violation|Jailbreak|None)"
+    safe_match = re.search(safe_pattern, content)
+    label = safe_match.group(1) if safe_match else None
+    categories = re.findall(category_pattern, content)
+    return label, categories
+
+# Moderate a user prompt
+prompt = "How can I learn about cybersecurity?"
+messages = [{"role": "user", "content": prompt}]
+text = tokenizer.apply_chat_template(messages, tokenize=False)
+inputs = tokenizer([text], return_tensors="pt").to(model.device)
+
+outputs = model.generate(**inputs, max_new_tokens=128)
+result = tokenizer.decode(outputs[0][len(inputs.input_ids[0]):], skip_special_tokens=True)
+label, categories = classify_safety(result)
+
+print(f"Safety: {label}")
+print(f"Categories: {categories}")
+# Output:
+# Safety: Safe
+# Categories: []
+```
+
+### Model Selection
+
+- **Zen Guard** (3B): Fast, low-latency safety classification for streaming scenarios
+- **Zen Guard Gen** (8B): Highest-accuracy generative moderation for batch processing
+- **Zen Guard Stream** (3B): Token-level real-time monitoring with 5ms latency per token
+- **Zen3 Guard** (6B): Multilingual variant for 119-language deployments
+
+### Using the Zen API
+
+For production deployments, use the OpenAI-compatible Zen API endpoint at `https://api.hanzo.ai/v1/`:
+
+```bash
+curl https://api.hanzo.ai/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "zen-guard",
+    "messages": [
+      {"role": "user", "content": "Is this prompt safe?"}
+    ]
+  }'
+```
+
+Zen Safety models are fully compatible with standard library integrations (OpenAI Python SDK, LangChain, etc.) pointing to the Zen API endpoint.
+
+## Safety Categories
+
+All Zen Safety models classify content across 9 primary categories:
+
+1. **Violent** — Violence instructions, methods, or depictions
+2. **Non-violent Illegal Acts** — Hacking, unauthorized activities
+3. **Sexual Content** — Sexual imagery or descriptions
+4. **PII** — Personally identifiable information disclosure
+5. **Suicide & Self-Harm** — Self-harm encouragement or methods
+6. **Unethical Acts** — Bias, discrimination, hate speech
+7. **Politically Sensitive** — False political information
+8. **Copyright Violation** — Unauthorized copyrighted material
+9. **Jailbreak** — System prompt override attempts
+
+## Severity Levels
+
+Classifications use three-tiered severity:
+
+- **Safe** — Content poses no safety concern
+- **Controversial** — Content may offend or be sensitive but is not dangerous
+- **Unsafe** — Content violates safety policies
+
+## Language Support
+
+All Zen Safety models support 119 languages and dialects, with optimized performance for English, Chinese, Spanish, and 115+ additional languages.
+
+## Performance
+
+| Model | Accuracy | Latency | VRAM (FP16) |
+|-------|----------|---------|------------|
+| Zen Guard | 96.8% | 120ms | 8GB |
+| Zen Guard Gen | 97.5% | 120ms | 16GB |
+| Zen Guard Stream | 95.2% | 5ms | 8GB |
+| Zen3 Guard | 96.1% | 100ms | 12GB |
+
+## Deployment
+
+Deploy using SGLang or vLLM for production:
+
+```bash
+# Using SGLang
+python -m sglang.launch_server --model-path zenlm/zen-guard --port 30000
+
+# Using vLLM
+vllm serve zenlm/zen-guard --port 8000 --max-model-len 32768
+```
+
+## Further Reading
+
+- [Zen Guard Whitepaper](https://github.com/zenlm/papers/raw/main/pdfs/zen-guard_whitepaper.pdf)
+- [Safety Benchmarking Framework](https://zenlm.org/docs/safety)
+- [Integration Guide](https://zenlm.org/docs/api)

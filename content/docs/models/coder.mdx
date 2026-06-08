@@ -1,0 +1,99 @@
+---
+title: Code
+description: Specialized code generation and analysis models powered by Zen MoDE with extended context for repository-scale understanding.
+---
+
+The Zen Code model family includes specialized models for software engineering: from repo-scale code understanding and agentic refactoring to SQL query generation and database schema design. All models are built on the Zen architecture and support extended context windows for handling large codebases.
+
+## Models
+
+| Model | Params | Context | HF | Paper |
+|-------|--------|---------|----|----|
+| Zen 5 Coder | — | 256K | [weights](https://huggingface.co/zenlm/zen-5-coder) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen5_whitepaper.pdf) |
+| Zen 5 Coder (GGUF) | 79.7B (MoE) | — | [weights](https://huggingface.co/zenlm/zen-5-coder-gguf) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen4-coder_whitepaper.pdf) |
+| Zen SQL | 8B | 32K | [weights](https://huggingface.co/zenlm/zen-sql) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-code_whitepaper.pdf) |
+
+## Quick start
+
+### Zen 5 Coder: Repository-scale code understanding
+
+Zen 5 Coder is an 80B sparse-MoE model optimized for repo-scale understanding, agentic refactoring, and multi-step code generation tasks. Use it locally via `llama.cpp` (GGUF) or via the Hanzo API.
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+# Load Zen 5 Coder via transformers
+model = AutoModelForCausalLM.from_pretrained("zenlm/zen-5-coder")
+tokenizer = AutoTokenizer.from_pretrained("zenlm/zen-5-coder")
+
+# Prepare prompt with chat template
+messages = [
+    {"role": "user", "content": "Refactor this Python function to use async/await."}
+]
+text = tokenizer.apply_chat_template(
+    messages, tokenize=False, add_generation_prompt=True
+)
+
+# Generate code
+inputs = tokenizer(text, return_tensors="pt").to(model.device)
+output = model.generate(**inputs, max_new_tokens=2048)
+print(tokenizer.decode(output[0][inputs.input_ids.shape[-1]:], skip_special_tokens=True))
+```
+
+### Zen SQL: SQL query generation and database tasks
+
+Zen SQL is an 8B model specialized for complex query generation, schema design, optimization, and documentation. It supports PostgreSQL, MySQL, SQLite, BigQuery, Snowflake, and more.
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model = AutoModelForCausalLM.from_pretrained("zenlm/zen-sql")
+tokenizer = AutoTokenizer.from_pretrained("zenlm/zen-sql")
+
+messages = [
+    {"role": "user", "content": "Generate a PostgreSQL query to find users with more than 10 orders in the last 30 days."}
+]
+text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+
+inputs = tokenizer(text, return_tensors="pt").to(model.device)
+output = model.generate(**inputs, max_new_tokens=1024)
+print(tokenizer.decode(output[0][inputs.input_ids.shape[-1]:], skip_special_tokens=True))
+```
+
+## Using the Hanzo API
+
+All Zen Code models are available via the OpenAI-compatible endpoint at `api.hanzo.ai`. This is the recommended path for production deployments.
+
+```python
+from openai import OpenAI
+
+client = OpenAI(api_key="your-api-key", base_url="https://api.hanzo.ai/v1")
+
+response = client.chat.completions.create(
+    model="zen5-coder",
+    messages=[
+        {"role": "user", "content": "Write a TypeScript function that validates email addresses."}
+    ],
+    max_tokens=2048,
+)
+
+print(response.choices[0].message.content)
+```
+
+## Local inference with llama.cpp
+
+For the GGUF-quantized versions, use `llama.cpp` for CPU or GPU inference:
+
+```bash
+# Download GGUF (example with Q4_K_M quantization)
+# Zen 5 Coder GGUF requires 48+ GB VRAM for Q4_K_M
+
+llama-cli -m zen-5-coder-q4_k_m.gguf -p "Explain this code snippet" -n 2048
+```
+
+## Notes
+
+- **Zen 5 Coder** is designed for repo-scale code understanding with 256K context, ideal for codebases, PRs, and multi-file refactoring tasks.
+- **Zen SQL** specializes in database work, generating production-ready queries across multiple SQL dialects.
+- All models are Apache 2.0 licensed and support commercial use.
+- For optimal performance with large contexts or codebases, use the Hanzo API or local inference on GPU-enabled hardware.

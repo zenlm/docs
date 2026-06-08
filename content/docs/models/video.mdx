@@ -1,0 +1,90 @@
+---
+title: Video
+description: Zen video generation models for professional text-to-video and image-to-video synthesis.
+---
+
+# Video
+
+The Zen Video family delivers professional-grade video synthesis from text and image inputs. Built on diffusion-transformer architectures, these models enable high-resolution video generation for creative, media, and design workflows.
+
+## Models
+
+| Model | Params | Context | HF | Paper |
+|-------|--------|---------|----|----|
+| Zen Director | 5B | — | [weights](https://huggingface.co/zenlm/zen-director) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-director.pdf) |
+| Zen Video | 13B | — | [weights](https://huggingface.co/zenlm/zen-video) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-video.pdf) |
+| Zen Video I2V | 13B | — | [weights](https://huggingface.co/zenlm/zen-video-i2v) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-video-i2v_whitepaper.pdf) |
+
+## Quick Start
+
+### Text-to-Video with Zen Director
+
+The Zen Director pipeline provides the most efficient text and image-to-video generation:
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model = AutoModelForCausalLM.from_pretrained("zenlm/zen-director")
+tokenizer = AutoTokenizer.from_pretrained("zenlm/zen-director")
+
+from zen_director import ZenDirectorPipeline
+
+pipeline = ZenDirectorPipeline.from_pretrained("zenlm/zen-director")
+video = pipeline(
+    prompt="A cinematic shot of a sunset over mountains",
+    num_frames=120,
+    fps=24,
+    resolution=(1280, 720)
+)
+video.save("output.mp4")
+```
+
+### Using the Zen API
+
+For production deployments, use the OpenAI-compatible Zen API endpoint:
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url='https://api.hanzo.ai/v1',
+    api_key='your-api-key',
+)
+
+response = client.images.generate(
+    model='zen-video',
+    prompt='A drone flying over a tropical coastline at golden hour',
+    size='1280x720',
+)
+print(response.data[0].url)
+```
+
+### Image-to-Video with Zen Video I2V
+
+Animate a still image into fluid motion:
+
+```python
+from zen_video_i2v import ZenVideoI2VPipeline
+from PIL import Image
+
+pipeline = ZenVideoI2VPipeline.from_pretrained("zenlm/zen-video-i2v")
+
+image = Image.open("input_image.jpg")
+video = pipeline(
+    image=image,
+    prompt="The camera slowly pans across the scene",
+    num_frames=120,
+    fps=24,
+)
+video.save("output.mp4")
+```
+
+## Model Details
+
+**Zen Director** is a compact 5B diffusion-transformer optimized for both text and image inputs, providing fast professional-grade synthesis.
+
+**Zen Video** is the flagship 13B model delivering high-quality 720p text-to-video generation with precise prompt adherence.
+
+**Zen Video I2V** specializes in image-to-video animation, converting still images into coherent, fluid video sequences with motion control.
+
+All models support standard transformer inference with transformers and are optimized for Zen Engine deployment at 44K tokens/sec on Apple M3 Max hardware.
