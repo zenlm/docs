@@ -1,0 +1,90 @@
+---
+title: Specialty
+description: Domain-specialized models for finance, legal, medical, and translation tasks
+---
+
+The Zen Specialty model family provides domain-adapted language models tailored for specialized professional and technical domains. Each model is fine-tuned from a proven base architecture and optimized for specific tasks including financial analysis, legal document processing, medical reasoning, and multilingual translation.
+
+## Available Models
+
+| Model | Params | Context | HF | Paper |
+|-------|--------|---------|----|----|
+| Zen Finance | 8B | 32K | [weights](https://huggingface.co/zenlm/zen-finance) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-financial-ai.pdf) |
+| Zen Legal | 8B | 131K | [weights](https://huggingface.co/zenlm/zen-legal) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-legal-ai.pdf) |
+| Zen Medical | 8B | 32K | [weights](https://huggingface.co/zenlm/zen-medical) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-medical.pdf) |
+| Zen Translate | 8B | 32K | [weights](https://huggingface.co/zenlm/zen-translate) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-translator_whitepaper.pdf) |
+| Zen Translator | 7B | — | [weights](https://huggingface.co/zenlm/zen-translator) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-translator_whitepaper.pdf) |
+| Zen Family | 8.19B | — | [weights](https://huggingface.co/zenlm/zen-family) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen_family_overview.pdf) |
+| Zen Training | — | — | [weights](https://huggingface.co/zenlm/zen-training) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-training-methodology.pdf) |
+
+## Quick Start
+
+### Using Transformers
+
+Load any Zen Specialty model from HuggingFace with the standard `transformers` library:
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model_id = "zenlm/zen-finance"
+model = AutoModelForCausalLM.from_pretrained(model_id, torch_dtype="auto", device_map="auto")
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+
+messages = [
+    {"role": "user", "content": "Analyze the quarterly earnings report for Q3 2024."}
+]
+text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+inputs = tokenizer(text, return_tensors="pt").to(model.device)
+output = model.generate(**inputs, max_new_tokens=1024)
+
+result = tokenizer.decode(output[0][inputs.input_ids.shape[-1]:], skip_special_tokens=True)
+print(result)
+```
+
+### Using the Zen API
+
+For production deployments, use the OpenAI-compatible Zen API endpoint:
+
+```python
+import requests
+
+response = requests.post(
+    "https://api.hanzo.ai/v1/chat/completions",
+    json={
+        "model": "zen-finance",
+        "messages": [
+            {"role": "user", "content": "What are the key metrics in this financial statement?"}
+        ],
+        "max_tokens": 1024,
+    },
+    headers={"Authorization": f"Bearer YOUR_API_KEY"}
+)
+
+print(response.json()["choices"][0]["message"]["content"])
+```
+
+## Use Cases
+
+**Zen Finance**: Financial technology, earnings analysis, portfolio research, market commentary, financial document synthesis.
+
+**Zen Legal**: Contract review, legal document analysis, regulatory compliance, case law research, legal reasoning.
+
+**Zen Medical**: Clinical research, literature synthesis, pharmacology, diagnostic support, medical document understanding.
+
+**Zen Translate**: Multilingual translation, cross-lingual information retrieval, localization, international document processing.
+
+**Zen Translator**: Language pair translation, linguistic analysis, translation quality assurance.
+
+## Model Details
+
+All Zen Specialty models are built on the proven Zen architecture with Grouped Query Attention (GQA) and extended context windows. They are fine-tuned from strong base models to excel in their respective domains while maintaining broad language understanding capabilities.
+
+- **Architecture**: Transformer with GQA
+- **License**: Apache 2.0 (all models)
+- **Training**: Supervised fine-tuning on domain-specific corpora
+- **Deployment**: Supports local inference (CPU/GPU), cloud deployment, and edge inference via quantized formats
+
+All models are available in multiple formats:
+- **SafeTensors** (primary format, full precision)
+- **GGUF** (quantized for CPU and edge inference)
+- **MLX** (optimized for Apple Silicon)

@@ -1,0 +1,65 @@
+---
+title: Agents
+description: Zen agent models optimized for agentic reasoning, tool use, and multi-step task execution.
+---
+
+## Agents
+
+The Zen agent model family is purpose-built for agentic workflows, function calling, and multi-step reasoning. These models are trained on real-world environment reinforcement learning to excel at tool use, code generation, and complex task execution.
+
+### Model Family
+
+| Model | Params | Context | HF | Paper |
+|-------|--------|---------|-----|-------|
+| Zen 5 Mini | MoE (~10B active) | — | [weights](https://huggingface.co/zenlm/zen-5-mini-gguf) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen5_whitepaper.pdf) |
+| Zen Agent 4B | 4.02B | 32K | [weights](https://huggingface.co/zenlm/zen-agent-4b) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-agent.pdf) |
+| Zen Eco 4B Agent (GGUF) | 4.02B | 32K | [weights](https://huggingface.co/zenlm/zen-eco-4b-agent-gguf) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-agent.pdf) |
+| Zen Eco 4B Agent (MLX) | 4.02B | 32K | [weights](https://huggingface.co/zenlm/zen-eco-4b-agent-mlx) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-agent.pdf) |
+
+### Quick Start
+
+Below is a simple example using the Zen Agent 4B model with the Transformers library:
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model_id = "zenlm/zen-agent-4b"
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+model = AutoModelForCausalLM.from_pretrained(
+    model_id,
+    torch_dtype="auto",
+    device_map="auto"
+)
+
+messages = [{"role": "user", "content": "What tools do you have access to?"}]
+text = tokenizer.apply_chat_template(
+    messages,
+    tokenize=False,
+    add_generation_prompt=True
+)
+inputs = tokenizer([text], return_tensors="pt").to(model.device)
+outputs = model.generate(**inputs, max_new_tokens=512)
+print(tokenizer.decode(outputs[0][inputs.input_ids.shape[1]:], skip_special_tokens=True))
+```
+
+### Zen API
+
+For production deployments and higher throughput, use the Zen API endpoint at `api.hanzo.ai`. The API provides OpenAI-compatible endpoints and automatic scaling:
+
+```bash
+curl https://api.hanzo.ai/v1/chat/completions \
+  -H "Authorization: Bearer $HANZO_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "zen-agent-4b",
+    "messages": [{"role": "user", "content": "Execute this task..."}]
+  }'
+```
+
+Get a free API key with $5 credit at [console.hanzo.ai](https://console.hanzo.ai).
+
+### Model Variants
+
+**Zen 5 Mini** is the frontier-agentic tier, featuring a sparse mixture-of-experts architecture with \~10B active parameters and trained on large-scale real-world environment reinforcement learning.
+
+**Zen Agent 4B** and **Zen Eco variants** are compact, efficient 4B models optimized for tool calling and multi-step reasoning with a 32K token context window. The GGUF variant is optimized for `llama.cpp` and CPU inference, while the MLX variant is tuned for Apple Silicon hardware.

@@ -1,0 +1,166 @@
+---
+title: Audio & Speech
+description: Advanced speech recognition, text-to-speech, speech-to-speech dubbing, and generative audio synthesis models from the Zen family.
+---
+
+## Overview
+
+The Zen Audio & Speech model family provides production-grade tools for speech recognition, synthesis, dubbing, and audio generation. From compact on-device models (0.6B parameters) to full-featured systems, these models power voice agents, real-time transcription, voice cloning, and creative audio synthesis. All models support Apache 2.0 licensing and are optimized for deployment across diverse hardware.
+
+## Model Family
+
+| Model | Parameters | Context | Capabilities | HF | Paper |
+|-------|-----------|---------|--------------|----|----|
+| [Zen3 ASR](https://huggingface.co/zenlm/zen-3-asr) | 2.35B | — | High-accuracy streaming speech-to-text | [weights](https://huggingface.co/zenlm/zen-3-asr) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-scribe_whitepaper.pdf) |
+| [Zen3 ASR 0.6B](https://huggingface.co/zenlm/zen-3-asr-0.6B) | 0.94B | — | Lightweight on-device speech recognition | [weights](https://huggingface.co/zenlm/zen-3-asr-0.6B) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-scribe_whitepaper.pdf) |
+| [Zen3 ASR Forced Aligner](https://huggingface.co/zenlm/zen-3-asr-aligner) | 0.92B | — | Word & phoneme-level time alignment | [weights](https://huggingface.co/zenlm/zen-3-asr-aligner) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-scribe_whitepaper.pdf) |
+| [Zen3 TTS](https://huggingface.co/zenlm/zen-3-tts) | 1.93B | — | Natural speech synthesis with voice cloning | [weights](https://huggingface.co/zenlm/zen-3-tts) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-voice-clone.pdf) |
+| [Zen3 TTS 0.6B](https://huggingface.co/zenlm/zen-3-tts-0.6B) | 0.91B | — | Efficient on-device text-to-speech | [weights](https://huggingface.co/zenlm/zen-3-tts-0.6B) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-voice-clone.pdf) |
+| [Zen3 TTS Custom Voice](https://huggingface.co/zenlm/zen-3-tts-custom-voice) | 1.92B | — | Voice cloning from audio samples | [weights](https://huggingface.co/zenlm/zen-3-tts-custom-voice) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-voice-clone.pdf) |
+| [Zen3 TTS Voice Design](https://huggingface.co/zenlm/zen-3-tts-voice-design) | 1.92B | — | Create voices from text descriptors | [weights](https://huggingface.co/zenlm/zen-3-tts-voice-design) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-voice-clone.pdf) |
+| [Zen Dub Live](https://huggingface.co/zenlm/zen-dub-live) | 1.93B | 30s audio | Real-time speech-to-speech dubbing | [weights](https://huggingface.co/zenlm/zen-dub-live) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-dub-live_whitepaper.pdf) |
+| [Zen Foley](https://huggingface.co/zenlm/zen-foley) | 1B | 10s audio | Text-to-audio for sound effects | [weights](https://huggingface.co/zenlm/zen-foley) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-foley.pdf) |
+| [Zen Musician](https://huggingface.co/zenlm/zen-musician) | 6.22B | 30s audio | Text-to-music generation | [weights](https://huggingface.co/zenlm/zen-musician) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-musician.pdf) |
+
+## Use Cases
+
+- **Speech-to-Text**: Transcribe audio with high accuracy in real-time using Zen3 ASR
+- **Text-to-Speech**: Synthesize natural voices in English and Chinese with voice cloning
+- **Dubbing & Localization**: Real-time speech-to-speech conversion maintaining voice identity
+- **Audio Generation**: Create music and foley sound effects from text prompts
+- **Voice Alignment**: Generate precise time-codes for subtitles and media sync
+- **Voice Design**: Create synthetic voices from text descriptors without reference audio
+
+## Quick Start
+
+### Speech Recognition (ASR)
+
+```python
+import torch
+from transformers import AutoModel, AutoTokenizer
+
+# Load Zen3 ASR for transcription
+model_id = "zenlm/zen-3-asr"
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+model = AutoModel.from_pretrained(model_id, torch_dtype=torch.float16, device_map="auto")
+
+# Example: transcribe audio
+# (Use librosa or torchaudio to load audio and preprocess)
+import librosa
+import numpy as np
+
+audio_path = "example.wav"
+audio, sr = librosa.load(audio_path, sr=16000)
+
+# Model expects audio input; process with feature extraction
+# See model card for preprocessing details
+```
+
+### Text-to-Speech (TTS)
+
+```python
+from transformers import AutoModel, AutoTokenizer
+
+# Load Zen3 TTS for speech synthesis
+model_id = "zenlm/zen-3-tts"
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+model = AutoModel.from_pretrained(model_id)
+
+# Example: synthesize speech from text
+text = "Hello, this is natural speech synthesis."
+inputs = tokenizer(text, return_tensors="pt")
+
+# Generate audio output
+# (See model card for audio decoding)
+with torch.no_grad():
+    outputs = model.generate(**inputs)
+```
+
+### Using the Zen API
+
+For production deployments, use the OpenAI-compatible Zen API endpoint:
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="your-zen-api-key",
+    base_url="https://api.hanzo.ai/v1"
+)
+
+# Speech-to-Text via API
+audio_response = client.audio.transcriptions.create(
+    model="zen-3-asr",
+    file=open("audio.wav", "rb"),
+)
+print(audio_response.text)
+
+# Text-to-Speech via API
+speech_response = client.audio.speech.create(
+    model="zen-3-tts",
+    voice="alloy",
+    input="Hello, world!",
+)
+```
+
+## Deployment Options
+
+### Local Inference with Transformers
+
+All Zen audio models are compatible with HuggingFace Transformers. Download from the model hub and run locally with full control:
+
+```bash
+# Install dependencies
+pip install transformers torch librosa torchaudio
+
+# Load and run any model
+python -c "from transformers import AutoModel; m = AutoModel.from_pretrained('zenlm/zen-3-asr')"
+```
+
+### Edge & On-Device
+
+The 0.6B and 1B variants are optimized for edge deployment:
+- **Zen3 ASR 0.6B** and **Zen3 TTS 0.6B** for fast on-device transcription & synthesis
+- Quantize with GGUF or MLX for Apple Silicon
+- Run on Raspberry Pi, mobile, and IoT hardware
+
+### Cloud API
+
+Use the OpenAI-compatible endpoint at `api.hanzo.ai` for:
+- Managed inference with auto-scaling
+- Minimal latency (sub-100ms for most tasks)
+- Batch processing and streaming support
+- No model weights to manage locally
+
+## Model Selection Guide
+
+- **Best Transcription**: Zen3 ASR (2.35B) for accuracy, or 0.6B for speed
+- **Best Voice Synthesis**: Zen3 TTS with voice cloning for natural results
+- **Best Dubbing**: Zen Dub Live for real-time speech-to-speech
+- **Best Music Generation**: Zen Musician for up to 30 seconds of music
+- **Best on-Device**: Zen3 ASR 0.6B or Zen3 TTS 0.6B for compact deployments
+
+## Training & Fine-tuning
+
+All Zen audio models are available for fine-tuning. The architecture supports:
+- Speaker adaptation for custom voices
+- Domain-specific ASR training
+- Language expansion
+- Accent and emotion tuning
+
+See the [Zen Training](https://github.com/zenlm/zen) repository for recipes and best practices.
+
+## Performance Benchmarks
+
+| Model | Speed | Accuracy | Quality | Device |
+|-------|-------|----------|---------|--------|
+| Zen3 ASR | ~5x real-time | 95%+ WER | Reference | Server |
+| Zen3 ASR 0.6B | ~2x real-time | 90%+ WER | Good | Edge |
+| Zen3 TTS | ~100ms/sec | — | Natural | Server |
+| Zen3 TTS 0.6B | ~50ms/sec | — | Good | Device |
+| Zen Dub Live | Real-time | — | Natural | GPU |
+| Zen Musician | ~5s for 30s | — | High-fidelity | GPU |
+
+## License & Attribution
+
+All Zen audio models are released under the Apache 2.0 license, permitting commercial use, modification, and redistribution. When using these models, please cite the relevant whitepapers linked in the Model Family table above and attribute the Zen team. Model weights are available on [Hugging Face](https://huggingface.co/zenlm) and source code is hosted in the [Zen repository](https://github.com/zenlm/zen).
