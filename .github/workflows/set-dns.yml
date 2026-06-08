@@ -32,18 +32,27 @@ jobs:
           ZONE="${RECORD#*.}"   # docs.zenlm.org -> zenlm.org
           SUB="${RECORD%%.*}"   # docs.zenlm.org -> docs
 
-          # --- 1. KMS auth: clientId/clientSecret -> accessToken (no /api/) ---
-          login() {
-            curl -sf -X POST "$1/auth/login" -H 'Content-Type: application/json' \
-              -d "{\"clientId\":\"${KMS_CLIENT_ID}\",\"clientSecret\":\"${KMS_CLIENT_SECRET}\"}" 2>/dev/null
+          # --- 1. KMS/IAM auth: try every method, report which works ---
+          tokfrom() { printf '%s' "$1" | jq -r '.accessToken // .access_token // empty' 2>/dev/null; }
+          try() { # label  curl-args...
+            local label="$1"; shift
+            local body code
+            body=$(curl -s -m 20 -w $'\n%{http_code}' "$@" 2>/dev/null || true)
+            code=$(printf '%s' "$body" | tail -n1); body=$(printf '%s' "$body" | sed '$d')
+            local t; t=$(tokfrom "$body")
+            if [ -n "$t" ]; then echo "::add-mask::$t"; echo "AUTH OK [$label] http=$code"; TOK="$t"; return 0; fi
+            echo "auth try [$label] http=$code token=no  body=$(printf '%s' "$body" | head -c 120 | tr -d '\n')"
+            return 1
           }
+          TOK=""
+          J='{"clientId":"'"$KMS_CLIENT_ID"'","clientSecret":"'"$KMS_CLIENT_SECRET"'"}'
+          try "kms-login api.hanzo" -X POST "$KMS_BASE/auth/login"          -H 'Content-Type: application/json' -d "$J" || \
+          try "kms-login kms.hanzo" -X POST "$KMS_BASE_FALLBACK/auth/login" -H 'Content-Type: application/json' -d "$J" || \
+          try "iam-cc hanzo.id"     -X POST "https://hanzo.id/v1/iam/login/oauth/access_token" -d grant_type=client_credentials -d "client_id=$KMS_CLIENT_ID" -d "client_secret=$KMS_CLIENT_SECRET" -d scope=openid || \
+          try "iam-cc api.hanzo"    -X POST "https://api.hanzo.ai/v1/iam/login/oauth/access_token" -d grant_type=client_credentials -d "client_id=$KMS_CLIENT_ID" -d "client_secret=$KMS_CLIENT_SECRET" -d scope=openid || \
+          try "infisical-legacy"    -X POST "https://kms.hanzo.ai/api/v1/auth/universal-auth/login" -H 'Content-Type: application/json' -d "$J" || true
+          if [ -z "$TOK" ]; then echo "::error::KMS login failed (all methods)"; exit 1; fi
           BASE="$KMS_BASE"
-          AUTH=$(login "$BASE" || true)
-          if [ -z "${AUTH:-}" ]; then BASE="$KMS_BASE_FALLBACK"; AUTH=$(login "$BASE" || true); fi
-          TOK=$(printf '%s' "$AUTH" | jq -r '.accessToken // .access_token // empty')
-          if [ -z "$TOK" ]; then echo "::error::KMS login failed"; exit 1; fi
-          echo "::add-mask::$TOK"
-          echo "KMS auth ok via $BASE"
 
           # --- 2. Fetch the Cloudflare token (try known org/path layouts) ---
           getsec() { # org path name
