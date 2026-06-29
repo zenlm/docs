@@ -1,3 +1,5 @@
+<p align="center"><img src=".github/hero.svg" alt="docs" width="880"></p>
+
 # Zen LM Documentation
 
 Documentation site for [Zen LM](https://zenlm.org) - frontier AI models for code, reasoning, and multimodal understanding.
