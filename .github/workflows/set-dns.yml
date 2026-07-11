@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   set-dns:
-    runs-on: ubuntu-latest
+    runs-on: zenlm-build-linux-amd64
     env:
       KMS_CLIENT_ID: ${{ secrets.KMS_CLIENT_ID }}
       KMS_CLIENT_SECRET: ${{ secrets.KMS_CLIENT_SECRET }}
