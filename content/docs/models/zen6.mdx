@@ -1,0 +1,83 @@
+---
+title: Zen 6
+description: Zen 6 and Zen 6 Flash, available now. 27B dense and its ternary build, for agentic coding on your own machine and marketing work.
+---
+
+Zen 6 is the current Zen generation, from Zen LM, the open model family of Zoo Labs Foundation, a 501(c)(3) non-profit. It is chosen for two jobs:
+
+- **Agentic coding that runs on your own machine.** A 1,048,576-token context with YaRN, tool calling, and a bundled speculative drafter for faster decoding.
+- **Marketing work.** It reads images and video beside text, so the brief, the brand assets and the draft sit in one context.
+
+Zen 6 and Zen 6 Flash are available now, as open weights and as `zen6` and `zen6-flash` on api.hanzo.ai. The next generation, Zen 7, is in research preview: [request access](https://hanzo.ai/research-access).
+
+## Zen 6
+
+| | |
+|---|---|
+| **Parameters** | 27.3 billion in the language model, dense, plus a vision encoder |
+| **Layers** | 64: 48 linear-attention (gated delta) and 16 full-attention |
+| **Context** | 262,144 tokens native; 1,048,576 with YaRN (factor 4) |
+| **Inputs** | text, images, video |
+| **Weights** | NVFP4 (W4A4, group size 16) on the MLP and LM head, FP8 (E4M3) on attention |
+| **Speculative drafter** | bundled in `dflash2/`, block-diffusion |
+| **API id** | `zen6` |
+| **Architecture** | <span data-upstream>`Qwen3_5ForConditionalGeneration` (`model_type: qwen3_5`)</span> |
+
+Measured on one DGX Spark (GB10, CUDA 13.3, 128 GB unified memory):
+
+| Task | Alone | With the drafter | Speedup |
+|---|---|---|---|
+| Code completion (Python, Rust) | 62.4 tok/s | 141.2 tok/s | 2.26x |
+| Tool calling and JSON | 58.1 tok/s | 128.8 tok/s | 2.22x |
+| Reasoning | 54.0 tok/s | 109.8 tok/s | 2.03x |
+
+```bash
+hf download zenlm/zen6 --local-dir zen6
+
+python3 -m sglang.launch_server \
+  --model-path ./zen6 \
+  --speculative-draft-model-path ./zen6/dflash2 \
+  --speculative-num-steps 3 \
+  --speculative-algorithm DFLASH \
+  --kv-cache-dtype fp8_e5m2 \
+  --context-length 1048576 \
+  --port 30000
+```
+
+[Model card](https://huggingface.co/zenlm/zen6)
+
+## Zen 6 Flash
+
+The ternary build of Zen 6, for the same two jobs where the machine is small: every weight is ternary, the embeddings and LM head included.
+
+| | |
+|---|---|
+| **Densely packed** | 5.95 GB, 1.77 bits per weight |
+| **One trit per 2-bit slot** | 7.21 GB, 2.14 bits per weight, read by GPU and Metal kernels as is |
+| **Context** | 262,144 tokens native |
+| **Inputs** | text, images |
+| **Accuracy** | 98.2% of full precision on the average of 14 reasoning tests |
+| **Apple Silicon (M4 / M5 Max)** | 47.2 tok/s alone, 92.4 tok/s with the drafter; 7.84 GB with the vision projector and a 32K cache |
+| **API id** | `zen6-flash` |
+| **Architecture** | <span data-upstream>GGUF `general.architecture`: `qwen35`</span> |
+
+It runs with llama.cpp, with the vision projector and the drafter beside it; the model card has the command.
+
+[Model card](https://huggingface.co/zenlm/zen6-flash)
+
+## Call it hosted
+
+```bash
+curl https://api.hanzo.ai/v1/chat/completions \
+  -H "Authorization: Bearer $HANZO_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model": "zen6", "messages": [{"role": "user", "content": "Hello"}]}'
+```
+
+<div data-upstream>
+
+## License & attribution
+
+Zen 6: Apache-2.0; built from Qwen3.8-27B by the Qwen team, with the NVFP4 quantization from RadixArk and the speculative drafter from incoai. Zen 6 Flash: Apache-2.0; Ternary Bonsai 2 27B by prism-ml, itself built from Qwen3.8-27B by the Qwen team, with the speculative drafter by ProCreations.
+
+</div>

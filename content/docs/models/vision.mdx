@@ -1,14 +1,16 @@
 ---
 title: Vision-Language
-description: Zen vision-language models for multimodal image and text understanding, OCR, visual reasoning, and agentic tasks—scaling from 0.8B on-device to 235B frontier models.
+description: Zen vision-language models for multimodal image and text understanding, OCR, visual reasoning, and agentic tasks—from Zen 6, which reads images and video, to 0.8B on-device models.
 ---
 
-The Zen Vision-Language family spans edge deployment (0.8B) through frontier multimodal reasoning (235B MoE). Each model supports image and text inputs, with specialized variants for instruction-following, agentic function-calling, and design generation. All models are trained on the Zen MoDE (Mixture of Distilled Experts) architecture with Apache 2.0 licensing.
+The Zen Vision-Language family spans edge deployment (0.8B) through 235B MoE multimodal reasoning. Each model supports image and text inputs, with specialized variants for instruction-following, agentic function-calling, and design generation. The current generation, **Zen 6**, reads images and video beside text, and **Zen 6 Flash** reads images; both are available now. The earlier models below use the Zen MoDE (Mixture of Distilled Experts) architecture. All are Apache 2.0.
 
 ## Model Family
 
 | Model | Params | Context | HF | Paper |
 |-------|--------|---------|-----|-------|
+| Zen 6 | 27B dense, text + images + video | 262K native, 1M with YaRN | [weights](https://huggingface.co/zenlm/zen6) | [page](/docs/models/zen6) |
+| Zen 6 Flash | 27B ternary, text + images | 262K | [weights](https://huggingface.co/zenlm/zen6-flash) | [page](/docs/models/zen6#zen-6-flash) |
 | Zen 5 | 35B total / 3B active (MoE) | 256K | [weights](https://huggingface.co/zenlm/zen-5-gguf) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen5_whitepaper.pdf) |
 | Zen 5 Nano 0.8B | 0.87B (dense) | — | [weights](https://huggingface.co/zenlm/zen-5-nano-0.8B-gguf) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen5_whitepaper.pdf) |
 | Zen 5 Nano 2B | 2.27B (dense) | — | [weights](https://huggingface.co/zenlm/zen-5-nano-2B-gguf) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen5_whitepaper.pdf) |
@@ -95,7 +97,8 @@ print(response.choices[0].message.content)
 
 - **Edge (0.8B–2B)**: Zen 5 Nano series for phones, embedded devices, Raspberry Pi
 - **Balanced (4B–8B)**: Zen VL 4B/8B for laptops, on-premises, VRAM-constrained servers
-- **Frontier Reasoning (30B)**: Zen VL 30B for high-throughput reasoning, long-context documents
+- **Brief, brand assets and draft in one context**: Zen 6, which reads images and video beside text
+- **Reasoning (30B)**: Zen VL 30B for high-throughput reasoning, long-context documents
 - **Design & VQA (235B)**: Zen Designer series for visual generation, multimodal design tasks
 - **OCR & Vision (8.77B MoE)**: Zen 3 VL for text extraction (32 languages), visual grounding
 

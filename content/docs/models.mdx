@@ -1,11 +1,37 @@
 ---
 title: Models
-description: Complete Zen4 model family - Consumer, Coder, and Ultra tiers
+description: Zen 6 and Zen 6 Flash are available now; Zen 7 is in research preview; Zen 5, Zen 4 and Zen 3 are earlier generations.
 ---
 
-# Zen4 Models
+# Models
 
-## Consumer Line
+Zen LM is the open model family of Zoo Labs Foundation, a 501(c)(3) non-profit, chosen for agentic coding that runs on your own machine and for marketing work.
+
+## Zen 6 — Available Now
+
+| Model | Weights | Reads | Context | API id |
+|-------|---------|-------|---------|--------|
+| **Zen 6** | 27B dense, NVFP4 | text, images, video | 262,144 native; 1,048,576 with YaRN | `zen6` |
+| **Zen 6 Flash** | 27B ternary, 1.77 bits per weight (5.95 GB) | text, images | 262,144 native | `zen6-flash` |
+
+- [Zen 6](/docs/models/zen6) — specifications, measurements and serving commands
+- [HuggingFace: zenlm/zen6](https://huggingface.co/zenlm/zen6) | [HuggingFace: zenlm/zen6-flash](https://huggingface.co/zenlm/zen6-flash)
+
+## Zen 7 — Research Preview
+
+The next open-weight generation after Zen 6. It has no weights yet and cannot be called. [Request access](https://hanzo.ai/research-access).
+
+---
+
+## Zen 5 — Earlier Generation
+
+Hosted on api.hanzo.ai as `zen5`, `zen5-coder`, `zen5-flash`, `zen5-mini` and `zen5-pro`; the weights and their context windows are listed under [Chat & Reasoning](/docs/models/chat), [Code](/docs/models/coder) and [Vision-Language](/docs/models/vision).
+
+---
+
+## Zen 4 — Earlier Generation
+
+### Consumer Line
 Dense and MoE models for desktop and edge deployment. All built on abliterated open-source weights.
 
 | Model | Parameters | Active | Context | License |
@@ -16,39 +42,37 @@ Dense and MoE models for desktop and edge deployment. All built on abliterated o
 | **Zen4 Max** | 30B MoE | 3B | 256K | Apache 2.0 |
 | **Zen4 Pro Max** | 80B MoE | 3B | 256K | Apache 2.0 |
 
-### Zen4 Mini (4B)
+#### Zen4 Mini (4B)
 
 Ultra-efficient for edge and mobile. Full quality at 4B parameters.
 
 - [HuggingFace](https://huggingface.co/zenlm/zen4-mini) | [GitHub](https://github.com/zenlm/zen4-mini)
 
-### Zen4 (8B)
+#### Zen4 (8B)
 
 The standard model. Excellent balance of quality and efficiency.
 
 - [HuggingFace](https://huggingface.co/zenlm/zen4) | [GitHub](https://github.com/zenlm/zen4)
 
-### Zen4 Pro (14B)
+#### Zen4 Pro (14B)
 
 Professional-grade for demanding tasks. Strong reasoning and code generation.
 
 - [HuggingFace](https://huggingface.co/zenlm/zen4-pro) | [GitHub](https://github.com/zenlm/zen4-pro)
 
-### Zen4 Max (30B MoE)
+#### Zen4 Max (30B MoE)
 
-Flagship efficient model. 30B total with only 3B active via MoE.
+Efficient mixture-of-experts model. 30B total with only 3B active via MoE.
 
 - [HuggingFace](https://huggingface.co/zenlm/zen4-max) | [GitHub](https://github.com/zenlm/zen4-max)
 
-### Zen4 Pro Max (80B MoE) - Flagship
+#### Zen4 Pro Max (80B MoE)
 
-The ultimate consumer model. Hybrid Gated DeltaNet + Gated Attention + MoE architecture.
+The largest Zen4 consumer model. Hybrid Gated DeltaNet + Gated Attention + MoE architecture.
 
 - [HuggingFace](https://huggingface.co/zenlm/zen4-pro-max) | [GitHub](https://github.com/zenlm/zen4-pro-max)
 
----
-
-## Coder Line
+### Coder Line
 Specialized models for agentic programming and software engineering.
 
 | Model | Parameters | Active | Context | License |
@@ -57,76 +81,42 @@ Specialized models for agentic programming and software engineering.
 | **Zen4 Coder** | 80B MoE | 3B | 256K | Apache 2.0 |
 | **Zen4 Coder Pro** | 355B | 355B | 200K | MIT |
 
-### Zen4 Coder Flash (31B MoE)
+#### Zen4 Coder Flash (31B MoE)
 
 Fast coding model for rapid iteration. MoE architecture for maximum efficiency.
 
 - [HuggingFace](https://huggingface.co/zenlm/zen4-coder-flash) | [GitHub](https://github.com/zenlm/zen4-coder-flash)
 
-### Zen4 Coder (80B MoE) - Flagship Code
+#### Zen4 Coder (80B MoE)
 
 80B with 512-expert MoE for state-of-the-art code generation and agentic programming.
 
 - [HuggingFace](https://huggingface.co/zenlm/zen4-coder) | [GitHub](https://github.com/zenlm/zen4-coder)
 
-### Zen4 Coder Pro (355B) - Cloud Only
+#### Zen4 Coder Pro (355B) - Cloud Only
 
 Dense 355B coding powerhouse for maximum code intelligence.
 
 - [HuggingFace](https://huggingface.co/zenlm/zen4-coder-pro) | [GitHub](https://github.com/zenlm/zen4-coder-pro)
 
----
-
-## Ultra Line
+### Ultra Line
 Trillion-parameter models for cloud deployment.
 
 | Model | Parameters | Active | Context | Status |
 |-------|-----------|--------|---------|--------|
 | **Zen4 Ultra** | 1.04T MoE | 32B | 256K | Cloud Only |
-| **Zen4 Ultra Max** | 1T+ MoE | TBD | 1M | Coming Soon |
 
-### Zen4 Ultra (1.04T MoE) - Cloud
+#### Zen4 Ultra (1.04T MoE) - Cloud
 
-Trillion-parameter frontier model with 384 experts and native vision capabilities.
+Trillion-parameter model with 384 experts and native vision capabilities. The GT-QLoRA paper describes Gate-Targeted fine-tuning for a model of its shape ([paper](/papers/zen4-ultra-gt-qlora.pdf)).
 
 - [HuggingFace](https://huggingface.co/zenlm/zen4-ultra) | [GitHub](https://github.com/zenlm/zen4-ultra)
-
-### Zen4 Ultra Max (1T+ MoE) - Coming Soon
-
-Next-generation trillion-parameter model with 1M context window.
-
----
-
-## Zen5 — Next Generation
-<Callout type="info">
-**Zen5 Ultra** — 2T+ parameter MoDE (Mixture of Distilled Experts) model. The largest open-weight model in history, trained on-chain via NVIDIA TEE confidential compute on [hanzo.network](https://hanzo.network).
-</Callout>
-
-| Model | Parameters | Active | Architecture | Context | Status |
-|-------|-----------|--------|--------------|---------|--------|
-| **Zen5 Ultra** | 2T+ MoDE | TBD | Mixture of Distilled Experts | 1M+ | Research Preview |
-
-### Key Features
-
-- **2T+ parameters** — the largest open-weight model ever released
-- **MoDE architecture** — Mixture of Distilled Experts for efficient routing
-- **On-chain training** — verifiable training via NVIDIA TEE on [hanzo.network](https://hanzo.network)
-- **1M+ context** — full codebase and document understanding
-- **GT-QLoRA** — Gate-Targeted fine-tuning for MoE behavioral modification ([paper](/papers/zen4-ultra-gt-qlora.pdf))
-
-### Request Research Access
-
-Zen5 is in private research preview. Researchers and institutions can request early access to preprints, weights, and evaluation under a special research license.
-
-- [Request Research Access](https://hanzo.ai/contact) — for researchers and institutions
-- [Join Waitlist](https://cloud.hanzo.ai/signup) — for API access when available
-- [GT-QLoRA Paper](/papers/zen4-ultra-gt-qlora.pdf) — our MoE fine-tuning research
 
 ---
 
 ## Formats
 
-All locally-runnable models are available in multiple formats:
+Zen weights ship in these formats; each model card says which ones it has:
 
 | Format | Use Case | Platform |
 |--------|----------|----------|
@@ -136,23 +126,18 @@ All locally-runnable models are available in multiple formats:
 
 ## Usage
 
-```python
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
-# Load any Zen4 model
-model = AutoModelForCausalLM.from_pretrained("zenlm/zen4-pro-max")
-tokenizer = AutoTokenizer.from_pretrained("zenlm/zen4-pro-max")
-
-messages = [{"role": "user", "content": "Hello!"}]
-text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-inputs = tokenizer(text, return_tensors="pt")
-outputs = model.generate(**inputs, max_new_tokens=512)
-print(tokenizer.decode(outputs[0], skip_special_tokens=True))
+```bash
+curl https://api.hanzo.ai/v1/chat/completions \
+  -H "Authorization: Bearer $HANZO_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model": "zen6", "messages": [{"role": "user", "content": "Hello!"}]}'
 ```
+
+Every hosted Zen id, with its context window and price, is one request away: `curl -s https://api.hanzo.ai/v1/models`.
 
 ## Multimodal & Specialized
 
-In addition to Zen4, the Zen LM family includes multimodal and specialized models:
+Beside the generations, the Zen LM family includes multimodal and specialized models, among them the Zen 3 line:
 
 | Model | Type | Description |
 |-------|------|-------------|
@@ -162,3 +147,11 @@ In addition to Zen4, the Zen LM family includes multimodal and specialized model
 | zen-3d | 3D Assets | 3D mesh generation from text/image |
 
 All models available at [huggingface.co/zenlm](https://huggingface.co/zenlm).
+
+<div data-upstream>
+
+## License & attribution
+
+Zen 6: Apache-2.0, built from Qwen3.8-27B by the Qwen team. Zen 6 Flash: Apache-2.0, Ternary Bonsai 2 27B by prism-ml. Every other model's card on [Hugging Face](https://huggingface.co/zenlm) names its license and base models.
+
+</div>

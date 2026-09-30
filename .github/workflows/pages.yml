@@ -31,7 +31,7 @@ jobs:
       - name: Install (pnpm; resolves @hanzo workspace override)
         run: pnpm install --no-frozen-lockfile
       - name: Build static export
-        run: pnpm exec next build
+        run: pnpm build
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
       - uses: actions/configure-pages@v5

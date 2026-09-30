@@ -1,16 +1,18 @@
 ---
 title: Chat & Reasoning
-description: Zen chat and reasoning models ranging from 0.6B edge deployments to frontier 1M-context reasoning systems.
+description: Zen chat and reasoning models, from Zen 6 and Zen 6 Flash to 0.6B edge models.
 ---
 
 # Chat & Reasoning Models
 
-The Zen Chat & Reasoning family provides a complete spectrum of language models for conversational AI and multi-step reasoning, from ultra-lightweight edge models (0.6B) to frontier reasoning systems (1M context). Built on the **Zen MoDE architecture** (Mixture of Diverse/Distilled Experts), these models deliver strong performance across general chat, specialized reasoning, and domain-specific tasks.
+The Zen Chat & Reasoning family provides a complete spectrum of language models for conversational AI and multi-step reasoning, from ultra-lightweight edge models (0.6B) to 1M-context reasoning. The current generation is **Zen 6** and **Zen 6 Flash**, available now; the rest of the table is earlier generations and task lines.
 
 ## Model Gallery
 
 | Model | Parameters | Context | Weights | Paper |
 |-------|-----------|---------|---------|-------|
+| Zen 6 | 27B dense | 262K native, 1M with YaRN | [weights](https://huggingface.co/zenlm/zen6) | [page](/docs/models/zen6) |
+| Zen 6 Flash | 27B ternary, 1.77 bits per weight | 262K | [weights](https://huggingface.co/zenlm/zen6-flash) | [page](/docs/models/zen6#zen-6-flash) |
 | Zen 5 | — | 1M | [weights](https://huggingface.co/zenlm/zen-5) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen5_whitepaper.pdf) |
 | Zen 5 Pro | — | 512K | [weights](https://huggingface.co/zenlm/zen-5-pro) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen5_whitepaper.pdf) |
 | Zen 5 Pro (GGUF) | 284B / 37B active | 1M | [weights](https://huggingface.co/zenlm/zen-5-pro-gguf) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen5_whitepaper.pdf) |
@@ -80,6 +82,8 @@ Get your API key at [console.hanzo.ai](https://console.hanzo.ai) — includes $5
 
 **For Edge & Mobile**: Choose **Zen Nano** (0.6B) or **Zen Eco** (0.75–4B) for on-device deployment with minimal latency.
 
+**For Agentic Coding and Marketing Work**: **Zen 6** (27B, 1M context with YaRN, reads images and video), or **Zen 6 Flash** where the machine is a laptop. Hosted as `zen6` and `zen6-flash`.
+
 **For Speed & Throughput**: **Zen 5 Flash** (4.02B, 32K) delivers sub-100ms first-token-to-finish for high-volume routing.
 
 **For Reasoning & Depth**: **Zen 5 Pro** (512K context) or **Zen 5** (1M context) for complex multi-step tasks and long-document understanding.
@@ -90,10 +94,10 @@ Get your API key at [console.hanzo.ai](https://console.hanzo.ai) — includes $5
 
 ## Architecture
 
-All Zen chat models are built on **Zen MoDE**, a modern Mixture of Experts architecture featuring:
+Zen 6 is a 27B dense model; see [its page](/docs/models/zen6). The earlier Zen chat models are built on **Zen MoDE**, a Mixture of Experts architecture featuring:
 
 - **Sparse Activation**: Active parameters scale independently of total capacity
-- **Extended Context**: Up to 1M tokens for frontier models
+- **Extended Context**: Up to 1M tokens
 - **Grouped Query Attention (GQA)**: Efficient inference without sacrificing quality
 - **Multi-lingual**: Strong performance across 100+ languages
 - **Apache 2.0 License**: Download, fine-tune, and deploy commercially

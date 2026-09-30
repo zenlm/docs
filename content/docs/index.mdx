@@ -1,71 +1,67 @@
 ---
 title: Introduction
-description: Zen4 - Open foundation models from 4B to 1T+ parameters
+description: Zen LM is the open model family of Zoo Labs Foundation, for agentic coding on your own machine and marketing work.
 ---
 
-# Zen4
+# Zen LM
 
-**Zen4** is a family of open, uncensored AI models built on abliterated weights from frontier open-source MoE architectures.
+Zen LM is the open model family of Zoo Labs Foundation, a 501(c)(3) non-profit. It is chosen for two jobs:
 
-From the 4B Mini for edge deployment to the 1.04T Ultra for cloud-scale reasoning, Zen4 models run unrestricted with no safety theater.
+- **Agentic coding that runs on your own machine** — long context, tool use and fast decoding.
+- **Marketing work** — content, campaigns and brand voice, with the images and video behind them.
 
-## Model Tiers
+## Available now: Zen 6 and Zen 6 Flash
 
-<Cards>
-  <Card title="Consumer Line" href="/docs/models#consumer-line">
-    5 models from 4B to 80B MoE - dense models for edge and MoE flagships for desktop
-  </Card>
-  <Card title="Coder Line" href="/docs/models#coder-line">
-    3 coding models from 31B to 355B for agentic programming
-  </Card>
-  <Card title="Ultra Line" href="/docs/models#ultra-line">
-    Trillion-parameter MoE models for cloud deployment
-  </Card>
-  <Card title="Training" href="/docs/training">
-    Fine-tune Zen4 models with MLX, Unsloth, or DeepSpeed
-  </Card>
-</Cards>
+| Model | Weights | Reads | Context | API id |
+|-------|---------|-------|---------|--------|
+| **Zen 6** | 27B dense, NVFP4 | text, images, video | 262,144 native; 1,048,576 with YaRN | `zen6` |
+| **Zen 6 Flash** | 27B ternary, 1.77 bits per weight (5.95 GB) | text, images | 262,144 native | `zen6-flash` |
+
+Zen 6 ships a speculative drafter that took code completion from 62.4 to 141.2 tokens per second on one DGX Spark. Zen 6 Flash runs on an Apple Silicon laptop in 7.84 GB with its vision projector and a 32K cache. See [Zen 6](/docs/models/zen6).
+
+## Research preview: Zen 7
+
+Zen 7 is the next open-weight generation. It has no weights yet and cannot be called. [Request access](https://hanzo.ai/research-access).
 
 ## Quick Start
 
-### Use a Zen4 model
-
-```python
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
-model = AutoModelForCausalLM.from_pretrained("zenlm/zen4")
-tokenizer = AutoTokenizer.from_pretrained("zenlm/zen4")
-
-messages = [{"role": "user", "content": "Hello, who are you?"}]
-text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-inputs = tokenizer(text, return_tensors="pt").to(model.device)
-outputs = model.generate(**inputs, max_new_tokens=512)
-print(tokenizer.decode(outputs[0], skip_special_tokens=True))
-```
-
-### Run with MLX (Apple Silicon)
+### Call Zen 6
 
 ```bash
-pip install mlx-lm
-python -m mlx_lm.generate --model zenlm/zen4-max --prompt "Explain quantum computing"
+curl https://api.hanzo.ai/v1/chat/completions \
+  -H "Authorization: Bearer $HANZO_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model": "zen6", "messages": [{"role": "user", "content": "Hello"}]}'
 ```
 
-### Run with Ollama
+### Run it yourself
 
 ```bash
-ollama run zen4
+hf download zenlm/zen6 --local-dir zen6
 ```
 
-## Key Features
+The [Zen 6 page](/docs/models/zen6) has the serving commands for both builds.
 
-- **Abliterated**: Safety restrictions removed via orthogonalization of refusal directions
-- **Efficient MoE**: Flagship models use only 3B active parameters from 30B-80B total
-- **Long Context**: Up to 256K tokens on MoE models, 32K on dense models
-- **Open Weights**: All models available on [HuggingFace](https://huggingface.co/zenlm)
+## Earlier Generations
+
+<Cards>
+  <Card title="Models" href="/docs/models">
+    Zen 5, Zen 4 and Zen 3, with every model's weights and context
+  </Card>
+  <Card title="Chat & Reasoning" href="/docs/models/chat">
+    From 0.6B edge models to 1M-context reasoning
+  </Card>
+  <Card title="Code" href="/docs/models/coder">
+    Coding models for repository-scale work
+  </Card>
+  <Card title="Training" href="/docs/training">
+    Fine-tune Zen models with MLX or DeepSpeed
+  </Card>
+</Cards>
 
 ## Resources
 
 - [All Models on HuggingFace](https://huggingface.co/zenlm)
 - [GitHub Organization](https://github.com/zenlm)
 - [Zen LM Website](https://zenlm.org)
-- [Hanzo AI](https://hanzo.ai)
+- [Zoo Labs Foundation](https://zoo.ngo)

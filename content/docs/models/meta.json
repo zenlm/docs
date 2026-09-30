@@ -1,4 +1,4 @@
 {
   "title": "Models",
-  "pages": ["chat", "coder", "vision", "omni", "embeddings", "rerankers", "safety", "image", "video", "audio", "3d", "agents", "world", "specialty"]
+  "pages": ["zen6", "chat", "coder", "vision", "omni", "embeddings", "rerankers", "safety", "image", "video", "audio", "3d", "agents", "world", "specialty"]
 }

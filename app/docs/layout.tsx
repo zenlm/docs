@@ -19,7 +19,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       sidebar={{
         banner: (
           <div className="p-3 rounded-lg bg-primary/10 text-sm">
-            <strong>Zen5 Ultra</strong> — 2T+ MoDE — <a href="/docs/models#zen5--next-generation" className="underline">Research Preview</a>
+            <strong>Zen 6</strong> and <strong>Zen 6 Flash</strong> — <a href="/docs/models/zen6" className="underline">available now</a>
           </div>
         ),
       }}

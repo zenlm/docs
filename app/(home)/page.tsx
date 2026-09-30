@@ -9,34 +9,37 @@ export default function HomePage() {
         <h1 className="sheen-text text-5xl md:text-6xl font-semibold tracking-tight mb-4">
           Zen LM
         </h1>
-        <p className="text-lg md:text-xl text-white/55 mb-12 font-light tracking-tight">
-          Frontier AI models for code, reasoning, and multimodal understanding
+        <p className="text-lg md:text-xl text-white/55 mb-4 font-light tracking-tight">
+          Open models for two jobs: agentic coding that runs on your own machine, and marketing work.
+        </p>
+        <p className="text-sm md:text-base text-white/45 mb-12 font-light">
+          Zen LM is the open model family of Zoo Labs Foundation, a 501(c)(3) non-profit.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+          <Link href="/docs/models/zen6" className="glass-card p-6 rounded-2xl !border-white/20 block">
+            <h3 className="font-medium text-base mb-1.5 text-white/90">Zen 6</h3>
+            <p className="text-sm text-white/45">Available now · 27B dense · text, images and video · 1M context with YaRN</p>
+          </Link>
+          <Link href="/docs/models/zen6#zen-6-flash" className="glass-card p-6 rounded-2xl block">
+            <h3 className="font-medium text-base mb-1.5 text-white/90">Zen 6 Flash</h3>
+            <p className="text-sm text-white/45">Available now · ternary 27B in 5.95 GB · reads images · fits a laptop</p>
+          </Link>
           <div className="glass-card p-6 rounded-2xl">
-            <h3 className="font-medium text-base mb-1.5 text-white/90">zen4-ultra</h3>
-            <p className="text-sm text-white/45">1.04T MoE · 384 experts · 256K ctx</p>
-          </div>
-          <div className="glass-card p-6 rounded-2xl !border-white/20">
-            <h3 className="font-medium text-base mb-1.5 text-white/90">zen4-pro-max</h3>
-            <p className="text-sm text-white/45">80B MoE · Flagship consumer</p>
-          </div>
-          <div className="glass-card p-6 rounded-2xl">
-            <h3 className="font-medium text-base mb-1.5 text-white/90">zen4-coder-flash</h3>
-            <p className="text-sm text-white/45">31B MoE · 59.2% SWE-bench</p>
+            <h3 className="font-medium text-base mb-1.5 text-white/90">Zen 7</h3>
+            <p className="text-sm text-white/45">
+              Research preview · no weights yet ·{' '}
+              <a href="https://hanzo.ai/research-access" className="underline underline-offset-2 hover:text-white/80 transition">
+                Request access
+              </a>
+            </p>
           </div>
         </div>
 
-        <div className="mb-12 p-4 rounded-2xl border border-dashed border-white/10 text-center">
-          <p className="text-sm font-medium mb-1 text-white/80">Zen5 Ultra — 2T+ MoDE — Coming Soon</p>
-          <p className="text-xs text-white/45">
-            The largest open-weight model in history.{' '}
-            <Link href="/docs/models#zen5--next-generation" className="underline underline-offset-2 hover:text-white/80 transition">
-              Request research access
-            </Link>
-          </p>
-        </div>
+        <p className="mb-12 text-xs text-white/45">
+          Call <code>zen6</code> and <code>zen6-flash</code> on api.hanzo.ai. The earlier generations, Zen 5, Zen 4 and
+          Zen 3, are in the <Link href="/docs/models" className="underline underline-offset-2 hover:text-white/80 transition">model docs</Link>.
+        </p>
 
         <div className="flex gap-3 justify-center flex-wrap">
           <Link

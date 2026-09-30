@@ -4,10 +4,10 @@ import type { ReactNode } from 'react';
 
 export const metadata = {
   title: {
-    template: '%s | Zen4',
-    default: 'Zen4 Documentation - Open Foundation Models',
+    template: '%s | Zen LM',
+    default: 'Zen LM Documentation - Open Models for Agentic Coding and Marketing Work',
   },
-  description: 'Zen4 model family documentation. Consumer, Coder, and Ultra tiers from 4B to 1T+ parameters by Zen LM and Hanzo AI.',
+  description: 'Documentation for Zen LM, the open model family of Zoo Labs Foundation, a 501(c)(3) non-profit. Zen 6 and Zen 6 Flash are available now; Zen 7 is in research preview.',
   icons: {
     icon: '/favicon.svg',
   },

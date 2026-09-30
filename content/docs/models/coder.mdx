@@ -9,11 +9,17 @@ The Zen Code model family includes specialized models for software engineering: 
 
 | Model | Params | Context | HF | Paper |
 |-------|--------|---------|----|----|
+| Zen 6 | 27B dense | 262K native, 1M with YaRN | [weights](https://huggingface.co/zenlm/zen6) | [page](/docs/models/zen6) |
+| Zen 6 Flash | 27B ternary | 262K | [weights](https://huggingface.co/zenlm/zen6-flash) | [page](/docs/models/zen6#zen-6-flash) |
 | Zen 5 Coder | — | 256K | [weights](https://huggingface.co/zenlm/zen-5-coder) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen5_whitepaper.pdf) |
 | Zen 5 Coder (GGUF) | 79.7B (MoE) | — | [weights](https://huggingface.co/zenlm/zen-5-coder-gguf) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen4-coder_whitepaper.pdf) |
 | Zen SQL | 8B | 32K | [weights](https://huggingface.co/zenlm/zen-sql) | [paper](https://github.com/zenlm/papers/raw/main/pdfs/zen-code_whitepaper.pdf) |
 
 ## Quick start
+
+### Zen 6: agentic coding on your own machine
+
+Zen 6 is the current generation for coding agents: a 1,048,576-token context with YaRN, tool calling, and a bundled speculative drafter that took code completion from 62.4 to 141.2 tokens per second on one DGX Spark. Zen 6 Flash is its ternary build for a laptop. See [Zen 6](/docs/models/zen6) to run either, or call `zen6` on api.hanzo.ai.
 
 ### Zen 5 Coder: Repository-scale code understanding
 
